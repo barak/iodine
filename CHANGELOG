@@ -1,0 +1,38 @@
+
+iodine - IP over DNS is now easy
+
+   http://code.kryo.se/iodine
+
+********************************
+
+CHANGES:
+
+2006-11-08: 0.3.4
+	- Fixed handshake() buffer overflow
+	  (Found by poplix, Secunia: SA22674 / FrSIRT/ADV-2006-4333)
+	- Added more tests
+	- More name parsing enhancements
+	- Now runs on Linux/AMD64
+	- Added setting to change server port
+
+2006-11-05: 0.3.3
+	- Fixed possible buffer overflow
+	  (Found by poplix, Bugtraq ID: 20883)
+	- Reworked dns hostname encoding
+
+2006-09-11: 0.3.2
+	- Support for NetBSD
+	- Fixed potential security problems
+	- Name parsing routines rewritten, added regression tests
+	- New encoding, 25% more peak upstream throughput
+	- New -l option to set local ip to listen to on server
+
+2006-07-11: 0.3.1 
+	- Add Mac OSX support
+	- Add setting device name
+	- Use compression of domain name in reply (should allow setting MTU 
+		approx 200 bytes higher)
+
+2006-06-24: 0.3.0
+	- First public release
+	- Support for Linux, FreeBSD, OpenBSD

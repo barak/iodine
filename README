@@ -1,0 +1,120 @@
+
+iodine - IP over DNS is now easy
+
+   http://code.kryo.se/iodine
+
+********************************
+
+This is a piece of software that lets you tunnel IPv4 data through a DNS
+server. This can be usable in different situations where internet access is
+firewalled, but DNS queries are allowed.
+
+
+QUICKSTART:
+
+Try it out within your own LAN! Follow these simple steps:
+- On your server, run: ./iodined -f 10.0.0.1 test.asdf
+  (If you already use the 10.0.0.0 network, use another internal net like 
+  172.16.0.0)
+- On the client, run: ./iodine -f 192.168.0.1 test.asdf
+  (Replace 192.168.0.1 with the server's ip address)
+- Now the client has the tunnel ip 10.0.0.2 and the server has 10.0.0.1
+- Try pinging each other through the tunnel
+- Done! :)
+To actually use it through a relaying nameserver, see below.
+
+
+HOW TO USE:
+
+Server side:
+To use this tunnel, you need control over a real domain (like mytunnel.com),
+and a server with a static public IP number that does not yet run a DNS
+server. Then, delegate a subdomain (say, tunnel1.mytunnel.com) to the server.
+If you use BIND for the domain, add these lines to the zone file:
+
+tunnel1host	IN	A	10.15.213.99
+tunnel1		IN	NS	tunnel1host.mytunnel.com.
+
+Now any DNS querys for domains ending with tunnel1.mytunnnel.com will be sent
+to your server. Start iodined on the server. The first argument is the tunnel
+IP address (like 192.168.99.1) and the second is the assigned domain (in this
+case tunnel1.mytunnel.com). The -f argument will keep iodined running in the
+foreground, which helps when testing. iodined will start a virtual interface,
+and also start listening for DNS queries on UDP port 53. Now everything is
+ready for the client.
+
+Client side: 
+All the setup is done, just start iodine. It also takes two
+arguments, the first is the local relaying DNS server and the second is the
+domain used (tunnel1.mytunnnel.com). If DNS queries are allowed to any
+computer, you can use the tunnel endpoint (example: 10.15.213.99 or
+tunnel1host.mytunnel.com) as the first argument. The tunnel interface will get
+an IP close to the servers (in this case 192.168.99.2) and a suitable MTU. Now
+you should be able to ping the other end of the tunnel from either side.  
+
+
+MISC. INFO:
+
+Note that you can have only one client per server at the same time. This is
+because of the fragmentation of big packets going upstream, and will be fixed
+in future versions. 
+
+Try experimenting with the MTU size (-m option) to get maximum bandwidth. It is
+set to 1024 by default, which seems to work with most DNS servers. If you have
+problems, try setting it to below 512.
+
+If you have problems, try inspecting the traffic with network monitoring tools
+and make sure that the relaying DNS server has not cached the response. A
+cached error message could mean that you started the client before the server.
+
+The upstream data is sent gzipped encoded with Base32. DNS protocol allows
+one query per packet, and one query can be max 256 chars. Each domain name part
+can be max 63 chars. So your domain name and subdomain should be as short as
+possible to allow maximum throughput.
+
+
+TIPS & TRICKS:
+
+If your port 53 is taken on a specific interface by an application that does 
+not use it, use -p on iodined to specify an alternate port (like -p 5353) and 
+use for instance iptables (on Linux) to forward the traffic:
+iptables -t nat -A PREROUTING -i eth0 -p udp --dport 53 -j DNAT --to :5353
+(Sent in by Tom Schouten)
+
+
+PORTABILITY:
+
+iodine has been tested on Linux (x86, AMD64 and SPARC64), FreeBSD (x86), 
+OpenBSD (x86), NetBSD (x86) and MacOS X (10.3, ppc, with 
+http://www-user.rhrk.uni-kl.de/~nissler/tuntap/). It should work on other 
+unix-like systems as well that has TUN/TAP tunneling support (after some 
+patching). Let us know if you get it to run on other platforms. 
+
+
+THE NAME:
+
+The name iodine was chosen since it starts with IOD (IP Over DNS) and since
+iodine has atomic number 53, which happens to be the DNS port number.
+
+
+THANKS:
+
+- To kuxien for FreeBSD and OS X testing
+- To poplix for code audit
+
+
+AUTHORS & LICENSE:
+
+Copyright (c) 2006 Bjorn Andersson <flex@kryo.se>, Erik Ekman <yarrick@kryo.se>
+
+Permission to use, copy, modify, and distribute this software for any purpose
+with or without fee is hereby granted, provided that the above copyright notice
+and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.
