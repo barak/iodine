@@ -2,8 +2,11 @@ Source: iodine
 Section: net
 Priority: extra
 Maintainer: gregor herrmann <gregor+debian@comodo.priv.at>
+Uploaders: tony mancill <tmancill@debian.org>
 Build-Depends: debhelper (>= 5), po-debconf, help2man, zlib1g-dev, makedev
 Standards-Version: 3.7.2
+XS-Vcs-Svn: http://svn.toastfreeware.priv.at/debian/iodine/trunk/
+XS-Vcs-Browser: http://svn.toastfreeware.priv.at/wsvn/ToastfreewareDebian/iodine/trunk/
 
 Package: iodine
 Architecture: any
