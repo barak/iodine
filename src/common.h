@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006 Bjorn Andersson <flex@kryo.se>, Erik Ekman <yarrick@kryo.se>
+ * Copyright (c) 2006-2007 Bjorn Andersson <flex@kryo.se>, Erik Ekman <yarrick@kryo.se>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,17 +14,38 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef _READ_H_
-#define _READ_H_
+#ifndef __COMMON_H__
+#define __COMMON_H__
 
-int readname(char *, int, char **, char *, size_t);
-int readshort(char *, char **, short *);
-int readlong(char *, char **, uint32_t *);
-int readdata(char *, char **, char *, size_t);
+#include <sys/types.h>
+#include <sys/socket.h>
 
-int putbyte(char **, char);
-int putshort(char **, short);
-int putlong(char **, uint32_t);
-int putdata(char **, char *, size_t);
+#ifndef MIN
+#define MIN(a,b) ((a)<(b)?(a):(b))
+#endif
+#ifndef MAX
+#define MAX(a,b) ((a)>(b)?(a):(b))
+#endif
+
+struct packet 
+{
+	int len;
+	int offset;
+	char data[64*1024];
+};
+
+struct query {
+	char name[258];
+	short type;
+	short id;
+	struct sockaddr from;
+	int fromlen;
+};
+
+int open_dns(int, in_addr_t);
+void close_dns(int);
+
+void do_chroot(char *);
+void do_detach();
 
 #endif

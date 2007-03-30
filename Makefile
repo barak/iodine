@@ -1,43 +1,35 @@
-CC = gcc
-CLIENT = iodine
-CLIENTOBJS = iodine.o tun.o dns.o read.o encoding.o
-SERVER = iodined
-SERVEROBJS = iodined.o tun.o dns.o read.o encoding.o
-TESTSUITE = tester
-TESTOBJS = test.o dns.o read.o encoding.o
+PREFIX=/usr/local
 
-OS = `uname | tr "a-z" "A-Z"`
+INSTALL=/usr/bin/install
+INSTALL_FLAGS=
 
-LDFLAGS =  -lz
-CFLAGS = -c -g -Wall -D$(OS)
+MKDIR=mkdir
+MKDIR_FLAGS=-p
 
-all: stateos $(CLIENT) $(SERVER) $(TESTSUITE) 
+RM=rm
+RM_FLAGS=-f
 
-test:	$(TESTSUITE)
-	@./$(TESTSUITE)
+all: 
+	@(cd src; make all)
 
-stateos:
-	@echo OS is $(OS)
+install: all
+	$(MKDIR) $(MKDIR_FLAGS) $(PREFIX)/sbin
+	$(INSTALL) $(INSTALL_FLAGS) bin/iodine $(PREFIX)/sbin/iodine
+	$(INSTALL) $(INSTALL_FLAGS) bin/iodined $(PREFIX)/sbin/iodined
+	$(MKDIR) $(MKDIR_FLAGS) $(PREFIX)/man/man8
+	$(INSTALL) $(INSTALL_FLAGS) man/iodine.8 $(PREFIX)/man/man8/iodine.8
 
-$(CLIENT): $(CLIENTOBJS)
-	@echo LD $@
-	@$(CC) $(CLIENTOBJS) -o $(CLIENT) $(LDFLAGS)
-
-$(SERVER): $(SERVEROBJS)
-	@echo LD $@
-	@$(CC) $(SERVEROBJS) -o $(SERVER) $(LDFLAGS)
-
-$(TESTSUITE): $(TESTOBJS)
-	@echo LD $@
-	@$(CC) $(TESTOBJS) -o $(TESTSUITE) $(LDFLAGS)
-	@echo Running tests... 
-	@./$(TESTSUITE)
-
-.c.o: 
-	@echo CC $<
-	@$(CC) $(CFLAGS) $< -o $@
+uninstall:
+	$(RM) $(RM_FLAGS) $(PREFIX)/sbin/iodine
+	$(RM) $(RM_FLAGS) $(PREFIX)/sbin/iodined
+	$(RM) $(RM_FLAGS) $(PREFIX)/man/man8/iodine.8
+	
+test: all
+	@(cd tests; make all)
 
 clean:
 	@echo "Cleaning..."
-	@rm -f $(CLIENT) $(SERVER) $(TESTSUITE) *~ *.o *.core
+	@(cd src; make clean)
+	@(cd tests; make clean)
+	@rm -rf bin
 

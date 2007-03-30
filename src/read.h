@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006 Bjorn Andersson <flex@kryo.se>, Erik Ekman <yarrick@kryo.se>
+ * Copyright (c) 2006-2007 Bjorn Andersson <flex@kryo.se>, Erik Ekman <yarrick@kryo.se>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,10 +14,18 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef _ENCODING_H_
-#define _ENCODING_H_
+#ifndef _READ_H_
+#define _READ_H_
 
-int encode_data(char *, int, int, char *, char);
-int decode_data(char *, int, const char *, char *);
+int readname(char *, int, char **, char *, size_t);
+int readshort(char *, char **, short *);
+int readlong(char *, char **, uint32_t *);
+int readdata(char *, char **, char *, size_t);
 
-#endif /* _ENCODING_H_ */
+int putname(char **, size_t, const char *);
+int putbyte(char **, unsigned char);
+int putshort(char **, unsigned short);
+int putlong(char **, uint32_t);
+int putdata(char **, char *, size_t);
+
+#endif

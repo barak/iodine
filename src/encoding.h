@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006 Bjorn Andersson <flex@kryo.se>, Erik Ekman <yarrick@kryo.se>
+ * Copyright (c) 2006-2007 Bjorn Andersson <flex@kryo.se>, Erik Ekman <yarrick@kryo.se>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,22 +14,10 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef _STRUCTS_H_
-#define _STRUCTS_H_
+#ifndef _ENCODING_H_
+#define _ENCODING_H_
 
-struct packet 
-{
-	int len;
-	int offset;
-	char data[64*1024];
-};
+int encode_data(const char *, const size_t, int, char *);
+int decode_data(char *, int, const char *, char *);
 
-struct query {
-	char name[258];
-	short type;
-	short id;
-	struct sockaddr from;
-	int fromlen;
-};
-
-#endif /* _STRUCTS_H_ */
+#endif /* _ENCODING_H_ */

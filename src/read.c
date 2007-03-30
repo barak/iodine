@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006 Bjorn Andersson <flex@kryo.se>, Erik Ekman <yarrick@kryo.se>
+ * Copyright (c) 2006-2007 Bjorn Andersson <flex@kryo.se>, Erik Ekman <yarrick@kryo.se>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,6 +16,7 @@
 
 #include <string.h>
 #include <stdint.h>
+#include <stdlib.h>
 
 static int
 readname_loop(char *packet, int packetlen, char **src, char *dst, size_t length, size_t loop)
@@ -41,10 +42,10 @@ readname_loop(char *packet, int packetlen, char **src, char *dst, size_t length,
 			offset = (((s[-1] & 0x3f) << 8) | (s[0] & 0xff));
 			if (offset > packetlen) {
 				if (len == 0) {
-					// Bad jump first in packet
+					/* Bad jump first in packet */
 					return 0;
 				} else {
-					// Bad jump after some data
+					/* Bad jump after some data */
 					break;
 				}
 			}
@@ -87,7 +88,7 @@ readshort(char *packet, char **src, short *dst)
 {
 	unsigned char *p;
 
-	p = *src;
+	p = (unsigned char *) *src;
 	*dst = (p[0] << 8) | p[1];
 
 	(*src) += sizeof(short);
@@ -97,10 +98,10 @@ readshort(char *packet, char **src, short *dst)
 int
 readlong(char *packet, char **src, uint32_t *dst)
 {
-	// A long as described in dns protocol is always 32 bits
+	/* A long as described in dns protocol is always 32 bits */
 	unsigned char *p;
 
-	p = *src;
+	p = (unsigned char *) *src;
 
 	*dst = ((uint32_t)p[0] << 24) 
 		 | ((uint32_t)p[1] << 16) 
@@ -125,7 +126,42 @@ readdata(char *packet, char **src, char *dst, size_t len)
 }
 
 int
-putbyte(char **dst, char value)
+putname(char **buf, size_t buflen, const char *host)
+{
+	char *word;
+	int left;
+	char *h;
+	char *p;
+
+	h = strdup(host);
+	left = buflen;
+	p = *buf;
+	
+	word = strtok(h, ".");
+	while(word) {
+		if (strlen(word) > 63 || strlen(word) > left) {
+			free(h);
+			return -1;
+		}
+
+		left -= (strlen(word) + 1);
+		*p++ = (char)strlen(word);
+		memcpy(p, word, strlen(word));
+		p += strlen(word);
+
+		word = strtok(NULL, ".");
+	}
+
+	*p++ = 0;
+
+	free(h);
+
+	*buf = p;
+	return buflen - left;
+}
+
+int
+putbyte(char **dst, unsigned char value)
 {
 	**dst = value;
 	(*dst)++;
@@ -134,33 +170,33 @@ putbyte(char **dst, char value)
 }
 
 int
-putshort(char **dst, short value)
+putshort(char **dst, unsigned short value)
 {
 	unsigned char *p;
 
-	p = *dst;
+	p = (unsigned char *) *dst;
 
 	*p++ = (value >> 8);
 	*p++ = value;
 
-	(*dst) = p;
+	(*dst) = (char *) p;
 	return sizeof(short);
 }
 
 int
 putlong(char **dst, uint32_t value)
 {
-	// A long as described in dns protocol is always 32 bits
+	/* A long as described in dns protocol is always 32 bits */
 	unsigned char *p;
 
-	p = *dst;
+	p = (unsigned char *) *dst;
 
 	*p++ = (value >> 24);
 	*p++ = (value >> 16);
 	*p++ = (value >> 8);
 	*p++ = (value);
 
-	(*dst) = p;
+	(*dst) = (char *) p;
 	return sizeof(uint32_t);
 }
 

@@ -27,22 +27,20 @@ build: build-stamp
 build-stamp: configure-stamp
 	dh_testdir
 	$(MAKE)
-	help2man ./iodine --name="IP over DNS tunneling client" --section=8 --source=iodine --no-info --help-option=-h --version-option=-v --output=debian/iodine.8
-	help2man ./iodined --name="IP over DNS tunneling server" --section=8 --source=iodined --no-info --help-option=-h --version-option=-v --output=debian/iodined.8
+	$(MAKE) test
 	touch $@
 
 clean:
 	dh_testdir
 	dh_testroot
 	rm -f build-stamp configure-stamp
-
-	# Add here commands to clean up after the build process.
 	$(MAKE) clean
-	dh_clean debian/iodine.8 debian/iodined.8
+	dh_clean
 
 install: build
 	dh_testdir
 	dh_testroot
+	$(MAKE) install --prefix=/usr
 	dh_clean -k 
 	dh_installdirs
 
@@ -70,8 +68,8 @@ binary-arch: build install
 	dh_installinit --name=iodined
 #	dh_installcron
 #	dh_installinfo
-	dh_installman debian/iodine.8 debian/iodined.8
-	dh_link
+#	dh_installman
+	dh_link usr/share/man/man8/iodine.8 usr/share/man/man8/iodined.8
 	dh_strip
 	dh_compress
 	dh_fixperms
