@@ -42,9 +42,7 @@ clean: unpatch
 install: build patch
 	dh_testdir
 	dh_testroot
-	dh_installdirs
-	$(MAKE) install PREFIX=$(CURDIR)/debian/iodine/usr 
-	dh_clean
+	$(MAKE) install PREFIX=debian/iodine/usr 
 
 
 # Build architecture-independent files here.
@@ -73,7 +71,7 @@ binary-arch: build install
 #	dh_installman
 	dh_link usr/share/man/man8/iodine.8 usr/share/man/man8/iodined.8
 	dh_strip
-	dh_compress $(CURDIR)/debian/iodine/usr/share/man/man8/iodine.8
+	dh_compress
 	dh_fixperms
 #	dh_perl
 #	dh_makeshlibs

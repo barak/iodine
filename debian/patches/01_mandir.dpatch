@@ -2,12 +2,12 @@
 ## 01_mandir.dpatch by  <gregor+debian@comodo.priv.at>
 ##
 ## All lines beginning with `## DP:' are a description of the patch.
-## DP: No fix path to dir for manpage in Makefile
+## DP: No fix path to dir for manpage in Makefile and escape - in manpage
 
 @DPATCH@
 diff -urNad iodine~/Makefile iodine/Makefile
 --- iodine~/Makefile	2007-03-30 21:35:47.000000000 +0200
-+++ iodine/Makefile	2007-03-30 22:10:22.000000000 +0200
++++ iodine/Makefile	2007-03-30 22:27:43.000000000 +0200
 @@ -16,13 +16,13 @@
  	$(MKDIR) $(MKDIR_FLAGS) $(PREFIX)/sbin
  	$(INSTALL) $(INSTALL_FLAGS) bin/iodine $(PREFIX)/sbin/iodine
@@ -25,3 +25,35 @@ diff -urNad iodine~/Makefile iodine/Makefile
  	
  test: all
  	@(cd tests; make all)
+diff -urNad iodine~/man/iodine.8 iodine/man/iodine.8
+--- iodine~/man/iodine.8	2007-03-30 21:35:47.000000000 +0200
++++ iodine/man/iodine.8	2007-03-30 22:28:12.000000000 +0200
+@@ -121,13 +121,13 @@
+ .TP
+ Try it out within your own LAN! Follow these simple steps:
+ .TP
+-- On your server, run: ./iodined -f 10.0.0.1 test.asdf
++- On your server, run: ./iodined \-f 10.0.0.1 test.asdf
+ (If you already use the 10.0.0.0 network, use another internal net like 
+ 172.16.0.0)
+ .TP
+ - Enter a password
+ .TP
+-- On the client, run: ./iodine -f 192.168.0.1 test.asdf
++- On the client, run: ./iodine \-f 192.168.0.1 test.asdf
+ (Replace 192.168.0.1 with the server's ip address)
+ .TP
+ - Enter the same password
+@@ -157,10 +157,10 @@
+ Now any DNS querys for domains ending with tunnel1.mytunnnel.com will be sent
+ to your server. Start iodined on the server. The first argument is the tunnel
+ IP address (like 192.168.99.1) and the second is the assigned domain (in this
+-case tunnel1.mytunnel.com). The -f argument will keep iodined running in the
++case tunnel1.mytunnel.com). The \-f argument will keep iodined running in the
+ foreground, which helps when testing. iodined will start a virtual interface,
+ and also start listening for DNS queries on UDP port 53. Either enter a
+-password on the commandline (-P pass) or after the server has started. Now 
++password on the commandline (\-P pass) or after the server has started. Now 
+ everything is ready for the client.
+ .TP
+ .B Client side: 
