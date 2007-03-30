@@ -3,14 +3,14 @@ Section: net
 Priority: extra
 Maintainer: gregor herrmann <gregor+debian@comodo.priv.at>
 Uploaders: tony mancill <tmancill@debian.org>
-Build-Depends: debhelper (>= 5), po-debconf, zlib1g-dev, makedev, dpatch, check
+Build-Depends: debhelper (>= 5), po-debconf, zlib1g-dev, dpatch, check
 Standards-Version: 3.7.2
 XS-Vcs-Svn: http://svn.toastfreeware.priv.at/debian/iodine/trunk/
 XS-Vcs-Browser: http://svn.toastfreeware.priv.at/wsvn/ToastfreewareDebian/iodine/trunk/
 
 Package: iodine
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}, makedev
 Description: tool for tunneling IPv4 data through a DNS server
  This is a piece of software that lets you tunnel IPv4 data through a DNS
  server. This can be usable in different situations where internet access is

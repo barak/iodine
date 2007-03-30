@@ -4,8 +4,9 @@ iodine (0.4.0-1) unstable; urgency=low
   * Fix debian/watch.
   * Don't create manpages anymore, now included in upstream tarball.
   * Change debian/rules; upstream Makefile now includes install and test targets.
+  * Move makedev from Build-Depends to Depends.
 
- -- gregor herrmann <gregor+debian@comodo.priv.at>  Fri, 30 Mar 2007 21:40:52 +0200
+ -- gregor herrmann <gregor+debian@comodo.priv.at>  Fri, 30 Mar 2007 22:44:40 +0200
 
 iodine (0.3.4-1) unstable; urgency=low
 
