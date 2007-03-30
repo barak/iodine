@@ -1,0 +1,27 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 01_mandir.dpatch by  <gregor+debian@comodo.priv.at>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: No fix path to dir for manpage in Makefile
+
+@DPATCH@
+diff -urNad iodine~/Makefile iodine/Makefile
+--- iodine~/Makefile	2007-03-30 21:35:47.000000000 +0200
++++ iodine/Makefile	2007-03-30 22:10:22.000000000 +0200
+@@ -16,13 +16,13 @@
+ 	$(MKDIR) $(MKDIR_FLAGS) $(PREFIX)/sbin
+ 	$(INSTALL) $(INSTALL_FLAGS) bin/iodine $(PREFIX)/sbin/iodine
+ 	$(INSTALL) $(INSTALL_FLAGS) bin/iodined $(PREFIX)/sbin/iodined
+-	$(MKDIR) $(MKDIR_FLAGS) $(PREFIX)/man/man8
+-	$(INSTALL) $(INSTALL_FLAGS) man/iodine.8 $(PREFIX)/man/man8/iodine.8
++	$(MKDIR) $(MKDIR_FLAGS) $(PREFIX)/share/man/man8
++	$(INSTALL) $(INSTALL_FLAGS) man/iodine.8 $(PREFIX)/share/man/man8/iodine.8
+ 
+ uninstall:
+ 	$(RM) $(RM_FLAGS) $(PREFIX)/sbin/iodine
+ 	$(RM) $(RM_FLAGS) $(PREFIX)/sbin/iodined
+-	$(RM) $(RM_FLAGS) $(PREFIX)/man/man8/iodine.8
++	$(RM) $(RM_FLAGS) $(PREFIX)/share/man/man8/iodine.8
+ 	
+ test: all
+ 	@(cd tests; make all)
