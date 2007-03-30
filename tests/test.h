@@ -14,31 +14,22 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef _DNS_H_
-#define _DNS_H_
+#ifndef __TEST_H__
+#define __TEST_H__
 
-int open_dns(const char *, int, in_addr_t);
-int dns_settarget(const char*);
-void close_dns(int);
+TCase *test_base32_create_tests();
+TCase *test_dns_create_tests();
+TCase *test_encoding_create_tests();
+TCase *test_read_create_tests();
+TCase *test_login_create_tests();
+TCase *test_user_create_tests();
 
-int dns_sending();
-void dns_handle_tun(int, char *, int);
-void dns_ping(int);
-void dns_handshake(int);
-int dns_read(int, char *, int);
-int dns_encode_hostname(const char *, char *, int);
+char *va_str(const char *, ...);
+	
+#if (CHECK_MAJOR_VERSION == 0 && \
+	((CHECK_MINOR_VERSION == 9 && CHECK_MICRO_VERSION < 2) || \
+	 (CHECK_MINOR_VERSION < 9)))
+#define tcase_set_timeout(...) 
+#endif
 
-extern struct sockaddr_in peer;
-
-int dnsd_read(int, struct query*, char *, int);
-void dnsd_send(int, struct query*, char *, int);
-
-int dnsd_haspacket();
-int dnsd_hasack();
-void dnsd_forceack(int);
-void dnsd_queuepacket(const char *, const int);
-
-int dns_parse_reply(char *, int, char *, int);
-
-
-#endif /* _DNS_H_ */
+#endif

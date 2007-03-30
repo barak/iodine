@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006 Bjorn Andersson <flex@kryo.se>, Erik Ekman <yarrick@kryo.se>
+ * Copyright (c) 2006-2007 Bjorn Andersson <flex@kryo.se>, Erik Ekman <yarrick@kryo.se>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -170,7 +170,7 @@ int
 read_tun(int tun_fd, char *buf, int len) 
 {
 #if defined (FREEBSD) || defined (DARWIN) || defined(NETBSD)
-	// FreeBSD has no header
+	/* FreeBSD/Darwin/NetBSD has no header */
 	return read(tun_fd, buf + 4, len - 4) + 4;
 #else /* !FREEBSD */
 	return read(tun_fd, buf, len);
