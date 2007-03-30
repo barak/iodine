@@ -29,7 +29,7 @@ build: build-stamp
 build-stamp: configure-stamp
 	dh_testdir
 	$(MAKE)
-#	$(MAKE) test
+	$(MAKE) test
 	touch $@
 
 clean: unpatch
