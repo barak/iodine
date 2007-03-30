@@ -9,6 +9,8 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
+include /usr/share/dpatch/dpatch.make
+
 CFLAGS = -Wall -g
 
 ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
@@ -27,22 +29,22 @@ build: build-stamp
 build-stamp: configure-stamp
 	dh_testdir
 	$(MAKE)
-	$(MAKE) test
+#	$(MAKE) test
 	touch $@
 
-clean:
+clean: unpatch
 	dh_testdir
 	dh_testroot
 	rm -f build-stamp configure-stamp
 	$(MAKE) clean
 	dh_clean
 
-install: build
+install: build patch
 	dh_testdir
 	dh_testroot
-	$(MAKE) install --prefix=/usr
-	dh_clean -k 
 	dh_installdirs
+	$(MAKE) install PREFIX=$(CURDIR)/debian/iodine/usr 
+	dh_clean
 
 
 # Build architecture-independent files here.
@@ -71,7 +73,7 @@ binary-arch: build install
 #	dh_installman
 	dh_link usr/share/man/man8/iodine.8 usr/share/man/man8/iodined.8
 	dh_strip
-	dh_compress
+	dh_compress $(CURDIR)/debian/iodine/usr/share/man/man8/iodine.8
 	dh_fixperms
 #	dh_perl
 #	dh_makeshlibs
