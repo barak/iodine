@@ -5,8 +5,10 @@ iodine (0.4.0-1) unstable; urgency=low
   * Don't create manpages anymore, now included in upstream tarball.
   * Change debian/rules; upstream Makefile now includes install and test targets.
   * Move makedev from Build-Depends to Depends.
+  * Add password option to debconf questions and /etc/default/iodine.
+  * Change order in postinst.
 
- -- gregor herrmann <gregor+debian@comodo.priv.at>  Fri, 30 Mar 2007 22:44:40 +0200
+ -- gregor herrmann <gregor+debian@comodo.priv.at>  Fri, 22 Jun 2007 14:50:34 +0200
 
 iodine (0.3.4-1) unstable; urgency=low
 
