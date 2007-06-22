@@ -64,7 +64,6 @@ binary-arch: build install
 #	dh_installpam
 #	dh_installmime
 #	dh_python
-	dh_installinit --name=iodine
 	dh_installinit --name=iodined
 #	dh_installcron
 #	dh_installinfo
