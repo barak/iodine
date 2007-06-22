@@ -43,8 +43,8 @@ get_config() {
 		log_warning_msg "$NAME is not configured to start automatically. Change this in /etc/default/$DEFAULT or run dpkg-reconfigure $DEFAULT."
 		exit 0
 	else
-		if [ -n "$IODINED_ARGS" ] ; then
-			DAEMON_ARGS=$IODINED_ARGS
+		if [ -n "$IODINED_ARGS" ] && [ -n "$IODINED_PASSWORD" ] ; then
+			DAEMON_ARGS="-P $IODINED_PASSWORD $IODINED_ARGS"
 		else
 			log_warning_msg "$NAME is not fully configured. Change this in /etc/default/$DEFAULT or run dpkg-reconfigure $DEFAULT."
 			exit 0

@@ -32,11 +32,14 @@ case "$1" in
       START_IODINED=$RET
       db_get iodine/daemon_options
       IODINED_ARGS=$RET
+      db_get iodine/daemon_password
+      IODINED_PASSWORD=$RET
       cat <<EOF > /etc/default/iodine
 # Default settings for iodine. This file is sourced from
 # /etc/init.d/iodined
 START_IODINED="$START_IODINED"
 IODINED_ARGS="$IODINED_ARGS"
+IODINED_PASSWORD="$IODINED_PASSWORD"
 EOF
     ;;
 
