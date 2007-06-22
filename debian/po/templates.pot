@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: gregor+debian@comodo.priv.at\n"
-"POT-Creation-Date: 2007-01-29 21:08+0100\n"
+"POT-Creation-Date: 2007-06-22 14:46+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -42,4 +42,19 @@ msgstr ""
 msgid ""
 "You need to give the necessary arguments to iodined; see iodined(8) for "
 "help. Example: 10.0.0.1 tunnel.mydomain.example"
+msgstr ""
+
+#. Type: password
+#. Description
+#: ../templates:3001
+msgid "Password for iodined (server):"
+msgstr ""
+
+#. Type: password
+#. Description
+#: ../templates:3001
+msgid ""
+"Enter the password iodined uses at startup. It has to be used by clients "
+"when connecting. This password will be stored in plain text in /etc/default/"
+"iodine."
 msgstr ""
