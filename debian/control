@@ -17,7 +17,7 @@ Description: tool for tunneling IPv4 data through a DNS server
  firewalled, but DNS queries are allowed.
  .
  iodine is similar to nstx but has password authentication, brings up the
- tun interface automatically and let's the user specify the IP address as a
+ tun interface automatically and lets the user specify the IP address as a
  command line option.
  .
   Homepage: http://code.kryo.se/iodine
