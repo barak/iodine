@@ -8,8 +8,9 @@ iodine (0.4.0-1) unstable; urgency=low
   * Move makedev from Build-Depends to Depends.
   * Add password option to debconf questions and /etc/default/iodine.
   * Change order in postinst.
+  * Add user iodine and run iodined in a chroot as this user.
 
- -- gregor herrmann <gregor+debian@comodo.priv.at>  Sat, 23 Jun 2007 13:33:53 +0200
+ -- gregor herrmann <gregor+debian@comodo.priv.at>  Sat, 23 Jun 2007 14:49:46 +0200
 
 iodine (0.3.4-1) unstable; urgency=low
 
