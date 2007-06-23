@@ -1,5 +1,6 @@
 iodine (0.4.0-1) unstable; urgency=low
 
+  * Initial upload to the Debian archive (closes: #430206).
   * New upstream release.
   * Fix debian/watch.
   * Don't create manpages anymore, now included in upstream tarball.
@@ -8,7 +9,7 @@ iodine (0.4.0-1) unstable; urgency=low
   * Add password option to debconf questions and /etc/default/iodine.
   * Change order in postinst.
 
- -- gregor herrmann <gregor+debian@comodo.priv.at>  Fri, 22 Jun 2007 14:50:34 +0200
+ -- gregor herrmann <gregor+debian@comodo.priv.at>  Sat, 23 Jun 2007 13:33:53 +0200
 
 iodine (0.3.4-1) unstable; urgency=low
 
