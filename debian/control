@@ -10,7 +10,7 @@ XS-Vcs-Browser: http://svn.toastfreeware.priv.at/wsvn/ToastfreewareDebian/iodine
 
 Package: iodine
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, makedev
+Depends: ${shlibs:Depends}, ${misc:Depends}, makedev, adduser
 Description: tool for tunneling IPv4 data through a DNS server
  This is a piece of software that lets you tunnel IPv4 data through a DNS
  server. This can be usable in different situations where internet access is
