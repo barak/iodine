@@ -27,6 +27,8 @@ case "$1" in
 	    	echo "Creating device /dev/net/tun ..."
 	    	cd /dev && WRITE_ON_UDEV=false ./MAKEDEV tun
 	    fi
+	    # and we want a special user
+	    adduser --quiet --system --home /var/run/iodine iodine
       # generate /etc/default/iodine
       db_get iodine/start_daemon
       START_IODINED=$RET
