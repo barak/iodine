@@ -43,6 +43,7 @@ START_IODINED="$START_IODINED"
 IODINED_ARGS="$IODINED_ARGS"
 IODINED_PASSWORD="$IODINED_PASSWORD"
 EOF
+      [ -e /etc/default/iodine ] && chmod 600 /etc/default/iodine
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)

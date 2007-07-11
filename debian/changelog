@@ -1,3 +1,10 @@
+iodine (0.4.0-2) UNRELEASED; urgency=low
+
+  * Change mode of /etc/default/iodine to 600, thanks to Lennart Poettering
+    (cf. #432719).
+
+ -- gregor herrmann <gregor+debian@comodo.priv.at>  Wed, 11 Jul 2007 18:10:12 +0200
+
 iodine (0.4.0-1) unstable; urgency=low
 
   * Initial upload to the Debian archive (closes: #430206).
