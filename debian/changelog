@@ -1,3 +1,12 @@
+iodine (0.4.0-3) UNRELEASED; urgency=low
+
+  * Add Portuguese translation for debconf messages, thanks to Américo
+    Monteiro and Miguel Figueiredo (closes: #433041).
+  * Add debconf-updatepo to debian/rule's clean target.
+  * Convert debian/changelog to UTF-8.
+
+ -- gregor herrmann <gregor+debian@comodo.priv.at>  Sat, 14 Jul 2007 00:52:15 +0200
+
 iodine (0.4.0-2) unstable; urgency=low
 
   * Change mode of /etc/default/iodine to 600, thanks to Lennart Poettering
