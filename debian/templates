@@ -2,7 +2,7 @@ Template: iodine/start_daemon
 Type: boolean
 Default: false
 _Description: Should iodined (server) start on boot?
- If you want want iodined to be started at boot time you can set this behaviour here.
+ If you want iodined to be started at boot time you can set this behaviour here.
 
 Template: iodine/daemon_options
 Type: string

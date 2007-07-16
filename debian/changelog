@@ -2,10 +2,14 @@ iodine (0.4.0-3) UNRELEASED; urgency=low
 
   * Add Portuguese translation for debconf messages, thanks to Américo
     Monteiro and Miguel Figueiredo (closes: #433041).
+  * Add German debconf translation, thanks to Helge Kreutzmann
+    (closes: #433296).
+  * Fix typo in debconf template, thanks to Helge Kreutzmann
+    (closes: #433297).
   * Add debconf-updatepo to debian/rule's clean target.
   * Convert debian/changelog to UTF-8.
 
- -- gregor herrmann <gregor+debian@comodo.priv.at>  Sat, 14 Jul 2007 00:52:15 +0200
+ -- gregor herrmann <gregor+debian@comodo.priv.at>  Mon, 16 Jul 2007 16:24:31 +0200
 
 iodine (0.4.0-2) unstable; urgency=low
 
