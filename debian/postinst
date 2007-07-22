@@ -22,28 +22,26 @@ set -e
 
 case "$1" in
     configure)
-    	# we need a tun device
-    	if [ ! -e /dev/net/tun ] ; then
-	    	echo "Creating device /dev/net/tun ..."
-	    	cd /dev && WRITE_ON_UDEV=false ./MAKEDEV tun
-	    fi
-	    # and we want a special user
-	    adduser --quiet --system --home /var/run/iodine iodine
-      # generate /etc/default/iodine
-      db_get iodine/start_daemon
-      START_IODINED=$RET
-      db_get iodine/daemon_options
-      IODINED_ARGS=$RET
-      db_get iodine/daemon_password
-      IODINED_PASSWORD=$RET
-      cat <<EOF > /etc/default/iodine
+        # we need a tun device
+        echo "Creating device /dev/net/tun ..."
+        cd /dev && ./MAKEDEV tun
+        # and we want a special user
+        adduser --quiet --system --home /var/run/iodine iodine
+        # generate /etc/default/iodine
+        db_get iodine/start_daemon
+        START_IODINED=$RET
+        db_get iodine/daemon_options
+        IODINED_ARGS=$RET
+        db_get iodine/daemon_password
+        IODINED_PASSWORD=$RET
+        cat <<EOF > /etc/default/iodine
 # Default settings for iodine. This file is sourced from
 # /etc/init.d/iodined
 START_IODINED="$START_IODINED"
 IODINED_ARGS="$IODINED_ARGS"
 IODINED_PASSWORD="$IODINED_PASSWORD"
 EOF
-      [ -e /etc/default/iodine ] && chmod 600 /etc/default/iodine
+        [ -e /etc/default/iodine ] && chmod 600 /etc/default/iodine
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)
