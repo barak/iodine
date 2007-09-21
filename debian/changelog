@@ -4,8 +4,9 @@ iodine (0.4.0-4) unstable; urgency=low
     (closes: #434323).
   * Clean up debian/rules.
   * Don't install TODO anymore, and remove debian/docs.
+  * Move upstream URL from the description to the new Homepage field.
 
- -- gregor herrmann <gregor+debian@comodo.priv.at>  Mon, 17 Sep 2007 20:03:36 +0200
+ -- gregor herrmann <gregor+debian@comodo.priv.at>  Fri, 21 Sep 2007 13:48:40 +0200
 
 iodine (0.4.0-3) unstable; urgency=low
 
