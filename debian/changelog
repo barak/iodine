@@ -1,4 +1,4 @@
-iodine (0.4.0-4) unstable; urgency=low
+iodine (0.4.0-4) UNRELEASED; urgency=low
 
   * Add French debconf translation, thanks to Christian Perrier
     (closes: #434323).
@@ -6,7 +6,7 @@ iodine (0.4.0-4) unstable; urgency=low
   * Don't install TODO anymore, and remove debian/docs.
   * Move upstream URL from the description to the new Homepage field.
 
- -- gregor herrmann <gregor+debian@comodo.priv.at>  Fri, 21 Sep 2007 13:48:40 +0200
+ -- gregor herrmann <gregor+debian@comodo.priv.at>  Tue, 02 Oct 2007 18:14:34 +0200
 
 iodine (0.4.0-3) unstable; urgency=low
 
