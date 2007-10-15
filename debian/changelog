@@ -5,8 +5,9 @@ iodine (0.4.0-4) UNRELEASED; urgency=low
   * Clean up debian/rules.
   * Don't install TODO anymore, and remove debian/docs.
   * Move upstream URL from the description to the new Homepage field.
+  * Change XS-Vcs-* fields to Vcs-*.
 
- -- gregor herrmann <gregor+debian@comodo.priv.at>  Tue, 02 Oct 2007 18:14:34 +0200
+ -- gregor herrmann <gregor+debian@comodo.priv.at>  Mon, 15 Oct 2007 19:55:14 +0200
 
 iodine (0.4.0-3) unstable; urgency=low
 
