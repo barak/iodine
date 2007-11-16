@@ -1,0 +1,32 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 02_detach.dpatch by  <gregor+debian@comodo.priv.at>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: daemonize before chrooting.
+
+@DPATCH@
+diff -urNad iodine~/src/iodine.c iodine/src/iodine.c
+--- iodine~/src/iodine.c	2007-03-30 21:35:42.000000000 +0200
++++ iodine/src/iodine.c	2007-11-16 12:20:25.000000000 +0100
+@@ -564,6 +564,10 @@
+ 	
+ 	printf("Sending queries for %s to %s\n", argv[1], argv[0]);
+ 
++	if (!foreground) {
++		do_detach();
++	}
++
+ 	do_chroot(newroot);
+ 	
+ 	if (username) {
+@@ -573,10 +577,6 @@
+ 		}
+ 	}
+ 	
+-	if (!foreground) {
+-		do_detach();
+-	}
+-
+ 	tunnel(tun_fd, dns_fd);
+ 
+ cleanup2:

@@ -2,12 +2,16 @@ iodine (0.4.0-4) UNRELEASED; urgency=low
 
   * Add French debconf translation, thanks to Christian Perrier
     (closes: #434323).
+  * Add Dutch debconf translation, thanks to Bart Cornelis
+    (closes: #451396).
   * Clean up debian/rules.
   * Don't install TODO anymore, and remove debian/docs.
   * Move upstream URL from the description to the new Homepage field.
   * Change XS-Vcs-* fields to Vcs-*.
+  * Add patch to daemonize before chrooting and dropping privileges, thanks
+    to Matthew William Solloway Bell (closes: #450759).
 
- -- gregor herrmann <gregor+debian@comodo.priv.at>  Mon, 15 Oct 2007 19:55:14 +0200
+ -- gregor herrmann <gregor+debian@comodo.priv.at>  Fri, 16 Nov 2007 12:22:40 +0100
 
 iodine (0.4.0-3) unstable; urgency=low
 
