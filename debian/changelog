@@ -1,4 +1,4 @@
-iodine (0.4.0-4) UNRELEASED; urgency=low
+iodine (0.4.0-4) unstable; urgency=low
 
   * Add French debconf translation, thanks to Christian Perrier
     (closes: #434323).
@@ -11,7 +11,7 @@ iodine (0.4.0-4) UNRELEASED; urgency=low
   * Add patch to daemonize before chrooting and dropping privileges, thanks
     to Matthew William Solloway Bell (closes: #450759).
 
- -- gregor herrmann <gregor+debian@comodo.priv.at>  Fri, 16 Nov 2007 12:22:40 +0100
+ -- gregor herrmann <gregor+debian@comodo.priv.at>  Fri, 16 Nov 2007 12:48:50 +0100
 
 iodine (0.4.0-3) unstable; urgency=low
 
