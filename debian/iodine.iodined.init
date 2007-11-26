@@ -57,6 +57,8 @@ get_config() {
 #
 do_start()
 {
+	# populate $DAEMON_ARGS
+	get_config
 	# Return
 	#   0 if daemon has been started
 	#   1 if daemon was already running
@@ -99,7 +101,6 @@ do_stop()
 
 case "$1" in
   start)
-	get_config
 	[ "$VERBOSE" != no ] && log_daemon_msg "Starting $DESC" "$NAME"
 	do_start
 	case "$?" in

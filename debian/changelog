@@ -1,3 +1,11 @@
+iodine (0.4.0-5) unstable; urgency=low
+
+  * Apply patch for "init script fails to restart", thanks to Horst
+    Schirmeier (closes: #453001).
+  * debian/rules: make configure-stamp depend on patch.
+
+ -- gregor herrmann <gregor+debian@comodo.priv.at>  Mon, 26 Nov 2007 20:36:41 +0100
+
 iodine (0.4.0-4) unstable; urgency=low
 
   * Add French debconf translation, thanks to Christian Perrier
