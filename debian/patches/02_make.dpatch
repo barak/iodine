@@ -1,0 +1,19 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 02_make.dpatch by  <gregor+debian@comodo.priv.at>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Always use $(MAKE)
+
+@DPATCH@
+diff -urNad iodine~/Makefile iodine/Makefile
+--- iodine~/Makefile	2007-12-01 01:54:27.000000000 +0100
++++ iodine/Makefile	2007-12-01 02:22:04.000000000 +0100
+@@ -35,7 +35,7 @@
+ test: all
+ 	@echo "!! The check library is required for compiling and running the tests"
+ 	@echo "!! Get it at http://check.sf.net"
+-	@(cd tests; make all)
++	@(cd tests; $(MAKE) all)
+ 
+ clean:
+ 	@echo "Cleaning..."

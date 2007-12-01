@@ -5,13 +5,14 @@ iodine (0.4.1-1) UNRELEASED; urgency=low
     - uses /etc/resolv.conf (closes: #432867).
     - incorporates patch to daemonize before chrooting and dropping
       privileges, therefore dropping 02_detach.dpatch.
-    - uses $(MAKE) in Makefile.
+    - uses $(MAKE) in Makefile, except in one case, therefore adding patch
+      02_make.dpatch.
     - fixes the install dir for the manpage, therefore adapting patch
       01_mandir.dpatch.
   * debian/copyright: update years of copyright.
   * debian/rules: use $(DPATCH_STAMPFN) and $@.
 
- -- gregor herrmann <gregor+debian@comodo.priv.at>  Sat, 01 Dec 2007 01:43:40 +0100
+ -- gregor herrmann <gregor+debian@comodo.priv.at>  Sat, 01 Dec 2007 02:18:04 +0100
 
 iodine (0.4.0-5) unstable; urgency=low
 
