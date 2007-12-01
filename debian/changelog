@@ -1,6 +1,13 @@
 iodine (0.4.1-1) UNRELEASED; urgency=low
 
   * New upstream release:
+    - hides password from ps and stdin (closes: #432719).
+    - uses /etc/resolv.conf (closes: #432867).
+    - incorporates patch to daemonize before chrooting and dropping
+      privileges, therefore dropping 02_detach.dpatch.
+    - uses $(MAKE) in Makefile.
+    - fixes the install dir for the manpage, therefore adapting patch
+      01_mandir.dpatch.
 
  -- gregor herrmann <gregor+debian@comodo.priv.at>  Sat, 01 Dec 2007 01:43:40 +0100
 

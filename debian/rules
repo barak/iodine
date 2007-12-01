@@ -20,7 +20,7 @@ else
 endif
 
 configure: configure-stamp
-configure-stamp: patch
+configure-stamp: $(DPATCH_STAMPFN)
 	dh_testdir
 	touch configure-stamp
 
@@ -42,7 +42,7 @@ clean: unpatch
 install: build
 	dh_testdir
 	dh_testroot
-	$(MAKE) install PREFIX=debian/iodine/usr 
+	$(MAKE) install prefix=debian/iodine/usr 
 
 
 # Build architecture-independent files here.
