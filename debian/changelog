@@ -9,6 +9,7 @@ iodine (0.4.1-1) UNRELEASED; urgency=low
     - fixes the install dir for the manpage, therefore adapting patch
       01_mandir.dpatch.
   * debian/copyright: update years of copyright.
+  * debian/rules: use $(DPATCH_STAMPFN) and $@.
 
  -- gregor herrmann <gregor+debian@comodo.priv.at>  Sat, 01 Dec 2007 01:43:40 +0100
 

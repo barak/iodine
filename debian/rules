@@ -22,7 +22,7 @@ endif
 configure: configure-stamp
 configure-stamp: $(DPATCH_STAMPFN)
 	dh_testdir
-	touch configure-stamp
+	touch $@
 
 build: build-stamp
 build-stamp: configure-stamp
