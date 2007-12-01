@@ -1,4 +1,4 @@
-iodine (0.4.1-1) UNRELEASED; urgency=low
+iodine (0.4.1-1) unstable; urgency=low
 
   * New upstream release:
     - hides password from ps and stdin (closes: #432719).
@@ -13,7 +13,7 @@ iodine (0.4.1-1) UNRELEASED; urgency=low
   * debian/rules: use $(DPATCH_STAMPFN) and $@.
   * Mention (improved) manpage in README.Debian.
 
- -- gregor herrmann <gregor+debian@comodo.priv.at>  Sat, 01 Dec 2007 02:18:04 +0100
+ -- gregor herrmann <gregor+debian@comodo.priv.at>  Sat, 01 Dec 2007 02:30:51 +0100
 
 iodine (0.4.0-5) unstable; urgency=low
 
