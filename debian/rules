@@ -34,15 +34,17 @@ build-stamp: configure-stamp
 clean: unpatch
 	dh_testdir
 	dh_testroot
-	rm -f build-stamp configure-stamp
+	rm -f build-stamp configure-stamp install-stamp
 	$(MAKE) clean
 	debconf-updatepo
 	dh_clean
 
-install: build
+install: install-stamp
+install-stamp: build-stamp
 	dh_testdir
 	dh_testroot
 	$(MAKE) install prefix=debian/iodine/usr 
+	touch $@
 
 
 # Build architecture-independent files here.
