@@ -3,6 +3,7 @@ iodine (0.4.1-2) UNRELEASED; urgency=low
   * Set Standards-Version to 3.7.3 (no changes required).
   * Create install-stamp target in debian/rules and adjust target
     dependencies.
+  * Change debian/copyright to the new machine-readable format.
 
  -- gregor herrmann <gregor+debian@comodo.priv.at>  Mon, 24 Dec 2007 23:13:45 +0100
 
