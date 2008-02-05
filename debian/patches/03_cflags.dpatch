@@ -1,0 +1,31 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 03_cflags.dpatch by  <gregor+debian@comodo.priv.at>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Combine upstream CFLAGS with CFLAGS from debian/rules.
+
+@DPATCH@
+diff -urNad iodine~/src/Makefile iodine/src/Makefile
+--- iodine~/src/Makefile	2008-02-05 17:26:08.000000000 +0100
++++ iodine/src/Makefile	2008-02-05 17:27:44.000000000 +0100
+@@ -9,7 +9,7 @@
+ ARCH = `uname -m`
+ 
+ LDFLAGS =  -lz
+-CFLAGS = -c -g -Wall -D$(OS) -pedantic
++CFLAGS += -c -D$(OS) -pedantic
+ 
+ all: stateos $(CLIENT) $(SERVER) $(TESTSUITE) 
+ 
+diff -urNad iodine~/tests/Makefile iodine/tests/Makefile
+--- iodine~/tests/Makefile	2008-02-04 17:30:39.000000000 +0100
++++ iodine/tests/Makefile	2008-02-05 17:27:55.000000000 +0100
+@@ -6,7 +6,7 @@
+ OS = `uname | tr "a-z" "A-Z"`
+ 
+ LDFLAGS =  -L/usr/local/lib -lcheck
+-CFLAGS = -g -Wall -D$(OS) -I../src -I/usr/local/include -pedantic
++CFLAGS += -D$(OS) -I../src -I/usr/local/include -pedantic
+ 
+ all: $(TEST)
+ 	@./$(TEST)

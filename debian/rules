@@ -27,8 +27,8 @@ configure-stamp: $(DPATCH_STAMPFN)
 build: build-stamp
 build-stamp: configure-stamp
 	dh_testdir
-	$(MAKE)
-	$(MAKE) test
+	CFLAGS="$(CFLAGS)" $(MAKE)
+	CFLAGS="$(CFLAGS)" $(MAKE) test
 	touch $@
 
 clean: unpatch
