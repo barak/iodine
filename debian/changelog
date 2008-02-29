@@ -1,3 +1,10 @@
+iodine (0.4.1-3) UNRELEASED; urgency=low
+
+  * Fix LSB header in init.d script, thanks to Petter Reinholdtsen for the
+    report and the patch (closes: #468653).
+
+ -- gregor herrmann <gregor+debian@comodo.priv.at>  Fri, 29 Feb 2008 23:11:04 +0100
+
 iodine (0.4.1-2) unstable; urgency=low
 
   * Set Standards-Version to 3.7.3 (no changes required).
