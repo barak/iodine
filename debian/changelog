@@ -1,10 +1,12 @@
-iodine (0.4.1-3) UNRELEASED; urgency=low
+iodine (0.4.1-3) unstable; urgency=low
 
   * Fix LSB header in init.d script, thanks to Petter Reinholdtsen for the
     report and the patch (closes: #468653).
   * Set debhelper compatibility level to 6.
+  * New patch 04_base64: don't build/test {src,tests}/base64* anymore, causes
+    a FBTFS on hppa, and isn't actually used anyway (closes: #468404).
 
- -- gregor herrmann <gregor+debian@comodo.priv.at>  Fri, 29 Feb 2008 23:14:51 +0100
+ -- gregor herrmann <gregor+debian@comodo.priv.at>  Sat, 01 Mar 2008 19:01:22 +0100
 
 iodine (0.4.1-2) unstable; urgency=low
 
