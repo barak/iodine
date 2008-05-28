@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: iodine 0.4.0-1\n"
-"Report-Msgid-Bugs-To: gregor+debian@comodo.priv.at\n"
-"POT-Creation-Date: 2007-07-16 16:43+0200\n"
+"Report-Msgid-Bugs-To: iodine@packages.debian.org\n"
+"POT-Creation-Date: 2008-05-28 19:30+0200\n"
 "PO-Revision-Date: 2007-07-16 09:23+0200\n"
 "Last-Translator: Helge Kreutzmann <debian@helgefjell.de>\n"
 "Language-Team: German <debian-l10n-german@lists.debian.org>\n"
@@ -27,30 +27,31 @@ msgid ""
 "If you want iodined to be started at boot time you can set this behaviour "
 "here."
 msgstr ""
-"Falls Sie möchten, dass zum Systemstartzeitpunkt auch Iodined gestartet "
+"Falls Sie mÃ¶chten, dass zum Systemstartzeitpunkt auch Iodined gestartet "
 "wird, stellen Sie dies hier ein."
 
 #. Type: string
 #. Description
 #: ../templates:2001
 msgid "Options to iodined (server):"
-msgstr "Optionen für Iodined (Server):"
+msgstr "Optionen fÃ¼r Iodined (Server):"
 
 #. Type: string
 #. Description
+#. TRANSLATORS: please don't translate/change ".example" (RFC 2606)
 #: ../templates:2001
 msgid ""
 "You need to give the necessary arguments to iodined; see iodined(8) for "
 "help. Example: 10.0.0.1 tunnel.mydomain.example"
 msgstr ""
-"Sie müssen die notwendigen Argumente an Iodined übergeben; lesen Sie iodined"
-"(8) für Hilfe. Beispiel: 10.0.0.1 tunnel.mydomain.example"
+"Sie mÃ¼ssen die notwendigen Argumente an Iodined Ã¼bergeben; lesen Sie iodined"
+"(8) fÃ¼r Hilfe. Beispiel: 10.0.0.1 tunnel.mydomain.example"
 
 #. Type: password
 #. Description
 #: ../templates:3001
 msgid "Password for iodined (server):"
-msgstr "Passwort für Iodined (Server):"
+msgstr "Passwort fÃ¼r Iodined (Server):"
 
 #. Type: password
 #. Description

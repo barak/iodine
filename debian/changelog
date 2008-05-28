@@ -1,3 +1,13 @@
+iodine (0.4.1-4) UNRELEASED; urgency=low
+
+  * Add Czech debconf translation, thanks to Daniel Kavan
+    (closes: #483299).
+  * Add note for translators to debconf template and change back localized
+    versions of ".example" to the original as mandated by RFC 2606.
+  * Convert de.po from ISO-8859-1 to UTF-8.
+
+ -- gregor herrmann <gregoa@debian.org>  Wed, 28 May 2008 19:15:50 +0200
+
 iodine (0.4.1-3) unstable; urgency=low
 
   * Fix LSB header in init.d script, thanks to Petter Reinholdtsen for the

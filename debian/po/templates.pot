@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: gregor+debian@comodo.priv.at\n"
-"POT-Creation-Date: 2007-07-16 16:43+0200\n"
+"Report-Msgid-Bugs-To: iodine@packages.debian.org\n"
+"POT-Creation-Date: 2008-05-28 19:30+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -37,6 +37,7 @@ msgstr ""
 
 #. Type: string
 #. Description
+#. TRANSLATORS: please don't translate/change ".example" (RFC 2606)
 #: ../templates:2001
 msgid ""
 "You need to give the necessary arguments to iodined; see iodined(8) for "
