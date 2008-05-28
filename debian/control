@@ -1,7 +1,7 @@
 Source: iodine
 Section: net
 Priority: extra
-Maintainer: gregor herrmann <gregor+debian@comodo.priv.at>
+Maintainer: gregor herrmann <gregoa@debian.org>
 Uploaders: tony mancill <tmancill@debian.org>
 Build-Depends: debhelper (>= 6), po-debconf, zlib1g-dev, dpatch, check
 Standards-Version: 3.7.3
