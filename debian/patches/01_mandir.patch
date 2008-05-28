@@ -1,13 +1,7 @@
-#! /bin/sh /usr/share/dpatch/dpatch-run
-## 01_mandir.dpatch by  <gregor+debian@comodo.priv.at>
-##
-## All lines beginning with `## DP:' are a description of the patch.
-## DP: escape - in manpage
-
-@DPATCH@
-diff -urNad iodine~/man/iodine.8 iodine/man/iodine.8
---- iodine~/man/iodine.8	2007-12-01 01:54:27.000000000 +0100
-+++ iodine/man/iodine.8	2007-12-01 01:54:39.000000000 +0100
+Author: <gregor+debian@comodo.priv.at>
+Description: escape - in manpage
+--- iodine.orig/man/iodine.8
++++ iodine/man/iodine.8
 @@ -124,13 +124,13 @@
  .TP
  Try it out within your own LAN! Follow these simple steps:
@@ -33,7 +27,7 @@ diff -urNad iodine~/man/iodine.8 iodine/man/iodine.8
  foreground, which helps when testing. iodined will start a virtual interface,
  and also start listening for DNS queries on UDP port 53. Either enter a
 -password on the commandline (-P pass) or after the server has started. Now 
-+password on the commandline (\-P pass) or after the server has started. Now 
++password on the commandline (\-P pass) or after the server has started. Now
  everything is ready for the client.
  .TP
  .B Client side: 
