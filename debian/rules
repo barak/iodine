@@ -43,7 +43,7 @@ install: install-stamp
 install-stamp: build-stamp
 	dh_testdir
 	dh_testroot
-	$(MAKE) install prefix=debian/iodine/usr 
+	$(MAKE) install prefix=debian/iodine/usr
 	touch $@
 
 
@@ -57,7 +57,8 @@ binary-arch: build install
 	dh_testroot
 	dh_installchangelogs CHANGELOG
 	dh_installdocs README
-	dh_installdebconf	
+	dh_installexamples debian/iodine-jigger
+	dh_installdebconf
 	dh_installinit --name=iodined
 	dh_link usr/share/man/man8/iodine.8 usr/share/man/man8/iodined.8
 	dh_strip
