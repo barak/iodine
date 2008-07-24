@@ -10,7 +10,7 @@ iodine (0.4.1-4) UNRELEASED; urgency=low
   * Add example script iodine-jigger (script to set up an iodine tunnel and
     route traffic through it) by Barak A. Pearlmutter (closes: #491294).
     Thanks, Barak! Add copyright/license information about the script to
-    debian/copyright.
+    debian/copyright. Mention the example script in README.Debian.
   * debian/copyright: wrap a long line, update years of packing copyright and
     my email address.
   * Set Standards-Version to 3.8.0; add debian/README.source to document
