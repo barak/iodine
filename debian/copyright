@@ -1,7 +1,8 @@
 Upstream source location: http://code.kryo.se/iodine
 
 Files: *
-Copyright: © 2006-2007 Bjorn Andersson <flex@kryo.se>, Erik Ekman <yarrick@kryo.se>
+Copyright: © 2006-2007 Bjorn Andersson <flex@kryo.se>,
+ Erik Ekman <yarrick@kryo.se>
 License: MIT
  Permission to use, copy, modify, and distribute this software for any
  purpose with or without fee is hereby granted, provided that the above
@@ -39,8 +40,8 @@ License: other
 
 Files: debian/*
 Copyright:
- © 2007, gregor herrmann <gregor+debian@comodo.priv.at>
- © 2007, tony mancill <tmancill@debian.org>
+ © 2007-2008, gregor herrmann <gregoa@debian.org>
+ © 2007-2008, tony mancill <tmancill@debian.org>
 License: GPL-1+
 
 See `/usr/share/common-licenses/GPL'.

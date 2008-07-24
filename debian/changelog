@@ -11,6 +11,8 @@ iodine (0.4.1-4) UNRELEASED; urgency=low
     route traffic through it) by Barak A. Pearlmutter (closes: #491294).
     Thanks, Barak! Add copyright/license information about the script to
     debian/copyright.
+  * debian/copyright: wrap a long line, update years of packing copyright and
+    my email address.
 
  -- gregor herrmann <gregoa@debian.org>  Wed, 28 May 2008 19:15:50 +0200
 
