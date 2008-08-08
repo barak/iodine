@@ -3,8 +3,8 @@ iodine (0.4.2-1) UNRELEASED; urgency=low
   * New upstream release:
     - new command line switch "-s" to skip configration of the tun interface
       (closes: #477692)
-    - drop patches 01_mandir.patch and 02_make.patch included upstream
-    - refresh patches 03_cflags.patch  and 04_base64.patch
+    - drop patches 01_mandir.patch and 02_make.patch, included upstream
+    - refresh patches 03_cflags.patch and 04_base64.patch
   * debian/rules: separate DESTDIR and prefix on make install.
   * Add the packages needed by the example script to Suggests: and don't
     compress the example script any more.
