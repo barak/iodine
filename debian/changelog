@@ -1,4 +1,4 @@
-iodine (0.4.2-1) UNRELEASED; urgency=low
+iodine (0.4.2-1) unstable; urgency=low
 
   * New upstream release:
     - new command line switch "-s" to skip configration of the tun interface
@@ -9,7 +9,7 @@ iodine (0.4.2-1) UNRELEASED; urgency=low
   * Add the packages needed by the example script to Suggests: and don't
     compress the example script any more.
 
- -- gregor herrmann <gregoa@debian.org>  Fri, 08 Aug 2008 15:22:19 -0300
+ -- gregor herrmann <gregoa@debian.org>  Fri, 08 Aug 2008 16:33:26 -0300
 
 iodine (0.4.1-4) unstable; urgency=low
 
