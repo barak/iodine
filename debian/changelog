@@ -5,8 +5,6 @@ iodine (0.4.2-1) UNRELEASED; urgency=low
       (closes: #477692)
     - drop patches 01_mandir.patch and 02_make.patch included upstream
     - refresh patches 03_cflags.patch  and 04_base64.patch
-  * Add an additional note to README.Debian: iodine's versions on the server
-    and the client have to match.
   * debian/rules: separate DESTDIR and prefix on make install.
   * Add the packages needed by the example script to Suggests: and don't
     compress the example script any more.

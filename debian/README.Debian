@@ -2,7 +2,6 @@ iodine for Debian
 -----------------
 
 * Please note that iodine(d) needs the tun kernel module.
-* Please note that iodine expects the same version on the server and the client.
 * Instruction for setting up the infrastructure (including delegating a new
   subdomain) are included in /usr/share/doc/iodine/README and in iodined(8).
 * /usr/share/doc/iodine/examples contains an example script for setting up a
