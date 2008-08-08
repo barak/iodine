@@ -62,7 +62,7 @@ binary-arch: build install
 	dh_installinit --name=iodined
 	dh_link usr/share/man/man8/iodine.8 usr/share/man/man8/iodined.8
 	dh_strip
-	dh_compress
+	dh_compress -Xiodine-jigger
 	dh_fixperms
 	dh_installdeb
 	dh_shlibdeps

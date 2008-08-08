@@ -8,6 +8,8 @@ iodine (0.4.2-1) UNRELEASED; urgency=low
   * Add an additional note to README.Debian: iodine's versions on the server
     and the client have to match.
   * debian/rules: separate DESTDIR and prefix on make install.
+  * Add the packages needed by the example script to Suggests: and don't
+    compress the example script any more.
 
  -- gregor herrmann <gregoa@debian.org>  Fri, 08 Aug 2008 15:22:19 -0300
 
