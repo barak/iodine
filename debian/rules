@@ -43,7 +43,7 @@ install: install-stamp
 install-stamp: build-stamp
 	dh_testdir
 	dh_testroot
-	$(MAKE) install prefix=debian/iodine/usr
+	$(MAKE) install DESTDIR=$(CURDIR)/debian/iodine prefix=/usr
 	touch $@
 
 
