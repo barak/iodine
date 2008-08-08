@@ -1,8 +1,8 @@
 Author: <gregor+debian@comodo.priv.at>
 Description: Don't build/test base64.*; causes a build failure on hppa,
 and isn't used anyway.
---- iodine.orig/src/Makefile
-+++ iodine/src/Makefile
+--- a/src/Makefile
++++ b/src/Makefile
 @@ -1,5 +1,5 @@
  CC = gcc
 -COMMONOBJS = tun.o dns.o read.o encoding.o login.o base32.o base64.o md5.o common.o
@@ -10,8 +10,8 @@ and isn't used anyway.
  CLIENTOBJS = iodine.o
  CLIENT = ../bin/iodine
  SERVEROBJS = iodined.o user.o
---- iodine.orig/tests/Makefile
-+++ iodine/tests/Makefile
+--- a/tests/Makefile
++++ b/tests/Makefile
 @@ -1,7 +1,7 @@
  CC = gcc
  TEST = test
@@ -22,9 +22,9 @@ and isn't used anyway.
  
  OS = `uname | tr "a-z" "A-Z"`
  
---- iodine.orig/tests/test.c
-+++ iodine/tests/test.c
-@@ -49,9 +49,6 @@
+--- a/tests/test.c
++++ b/tests/test.c
+@@ -35,9 +35,6 @@
  	test = test_base32_create_tests();
  	suite_add_tcase(iodine, test);
  

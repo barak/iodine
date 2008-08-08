@@ -3,6 +3,8 @@ iodine (0.4.2-1) UNRELEASED; urgency=low
   * New upstream release:
     - new command line switch "-s" to skip configration of the tun interface
       (closes: #477692)
+    - drop patches 01_mandir.patch and 02_make.patch included upstream
+    - refresh patches 03_cflags.patch  and 04_base64.patch
 
  -- gregor herrmann <gregoa@debian.org>  Fri, 08 Aug 2008 15:22:19 -0300
 
