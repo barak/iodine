@@ -1,3 +1,12 @@
+iodine (0.4.2-2) unstable; urgency=low
+
+  * debian/postinst: only try to create /dev/net/tun if it doesn't exist and
+    if /dev/MAKEDEV is available; thanks to Lucas Nussbaum for the bug report
+    and to Lucas, Adeodato Simó, Matthew Johnson, and Alexander Wirt for their
+    help (closes: #502823).
+
+ -- gregor herrmann <gregoa@debian.org>  Wed, 22 Oct 2008 20:09:45 +0200
+
 iodine (0.4.2-1) unstable; urgency=low
 
   * New upstream release:

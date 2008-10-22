@@ -23,8 +23,11 @@ set -e
 case "$1" in
     configure)
         # we need a tun device
-        echo "Creating device /dev/net/tun ..."
-        cd /dev && ./MAKEDEV tun
+        if [ ! -c /dev/net/tun ] && [ -x /dev/MAKEDEV ] ; then
+            echo "Creating device /dev/net/tun ..."
+            cd /dev
+            ./MAKEDEV tun || true
+        fi 
         # and we want a special user
         adduser --quiet --system --home /var/run/iodine iodine
         # generate /etc/default/iodine
