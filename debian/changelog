@@ -5,7 +5,7 @@ iodine (0.4.2-2) unstable; urgency=low
     and to Lucas, Adeodato Simó, Matthew Johnson, and Alexander Wirt for their
     help (closes: #502823).
 
- -- gregor herrmann <gregoa@debian.org>  Wed, 22 Oct 2008 20:09:45 +0200
+ -- gregor herrmann <gregoa@debian.org>  Wed, 22 Oct 2008 23:35:25 +0200
 
 iodine (0.4.2-1) unstable; urgency=low
 
