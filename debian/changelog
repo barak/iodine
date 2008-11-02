@@ -1,3 +1,9 @@
+iodine (0.4.2-3) UNRELEASED; urgency=low
+
+  * Add Swedish debconf translation, thanks to Martin Bagge (closes: #504247).
+
+ -- gregor herrmann <gregoa@debian.org>  Sun, 02 Nov 2008 13:56:18 +0100
+
 iodine (0.4.2-2) unstable; urgency=low
 
   * debian/postinst: only try to create /dev/net/tun if it doesn't exist and
