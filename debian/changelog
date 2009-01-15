@@ -1,6 +1,10 @@
 iodine (0.4.2-3) UNRELEASED; urgency=low
 
   * Add Swedish debconf translation, thanks to Martin Bagge (closes: #504247).
+  * Fix "Init script starts iodined even if it is already running"
+    by removing the "--pidfile" option from the start-stop-daemon calls;
+    doesn't work for a forking process. Thanks to Michael Goetzefor the bug
+    report (closes: #511887).
 
  -- gregor herrmann <gregoa@debian.org>  Sun, 02 Nov 2008 13:56:18 +0100
 
