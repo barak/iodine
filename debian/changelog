@@ -5,6 +5,8 @@ iodine (0.4.2-3) UNRELEASED; urgency=low
     removing the "--pidfile" option from the start-stop-daemon calls;
     doesn't work for a forking process. Thanks to Michael Goetze for 
     the bug report (closes: #511887).
+  * Set debhelper compatibility level to 7; adapt debian/{control,compat,rules}
+    and add debian/iodine.{docs,examples,links}.
 
  -- gregor herrmann <gregoa@debian.org>  Sun, 02 Nov 2008 13:56:18 +0100
 
