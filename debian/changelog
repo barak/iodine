@@ -1,4 +1,4 @@
-iodine (0.4.2-3) UNRELEASED; urgency=low
+iodine (0.4.2-3) unstable; urgency=low
 
   * Add Swedish debconf translation, thanks to Martin Bagge (closes: #504247).
   * Fix "Init script starts iodined even if it is already running" by
@@ -9,7 +9,7 @@ iodine (0.4.2-3) UNRELEASED; urgency=low
     and add debian/iodine.{docs,examples,links}.
   * debian/copyright: update formatting and years of packaging copyright.
 
- -- gregor herrmann <gregoa@debian.org>  Sun, 02 Nov 2008 13:56:18 +0100
+ -- gregor herrmann <gregoa@debian.org>  Thu, 15 Jan 2009 23:27:07 +0100
 
 iodine (0.4.2-2) unstable; urgency=low
 
