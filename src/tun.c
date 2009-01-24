@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2007 Bjorn Andersson <flex@kryo.se>, Erik Ekman <yarrick@kryo.se>
+ * Copyright (c) 2006-2009 Bjorn Andersson <flex@kryo.se>, Erik Ekman <yarrick@kryo.se>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -181,19 +181,30 @@ read_tun(int tun_fd, char *buf, size_t len)
 }
 
 int
-tun_setip(const char *ip)
+tun_setip(const char *ip, int netbits)
 {
 	char cmdline[512];
+	int netmask;
+	struct in_addr net;
+	int i;
+
 #ifndef LINUX
-		int r;
+	int r;
 #endif
+	netmask = 0;
+	for (i = 0; i < netbits; i++) {
+		netmask = (netmask << 1) | 1;
+	}
+	netmask <<= (32 - netbits);
+	net.s_addr = htonl(netmask);
 
 	if (inet_addr(ip) != INADDR_NONE) {
 		snprintf(cmdline, sizeof(cmdline), 
-				"/sbin/ifconfig %s %s %s netmask 255.255.255.0",
+				"/sbin/ifconfig %s %s %s netmask %s",
 				if_name,
 				ip,
-				ip);
+				ip,
+				inet_ntoa(net));
 		
 		printf("Setting IP of %s to %s\n", if_name, ip);
 #ifndef LINUX
@@ -202,10 +213,10 @@ tun_setip(const char *ip)
 			return r;
 		} else {
 			snprintf(cmdline, sizeof(cmdline),
-					"/sbin/route add %s/24 %s",
-					ip, ip);
+					"/sbin/route add %s/%d %s",
+					ip, netbits, ip);
 		}
-		printf("Adding route %s/24 to %s\n", ip, ip);
+		printf("Adding route %s/%d to %s\n", ip, netbits, ip);
 #endif
 		return system(cmdline);
 	} else {
@@ -216,7 +227,7 @@ tun_setip(const char *ip)
 }
 
 int 
-tun_setmtu(const size_t mtu)
+tun_setmtu(const unsigned mtu)
 {
 	char cmdline[512];
 

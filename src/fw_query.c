@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2009 Bjorn Andersson <flex@kryo.se>, Erik Ekman <yarrick@kryo.se>
+ * Copyright (c) 2008 Erik Ekman <yarrick@kryo.se>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,36 +14,36 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <check.h>
 #include <string.h>
+#include "fw_query.h"
 
-#include "test.h"
-#include "login.h"
+static struct fw_query fwq[FW_QUERY_CACHE_SIZE];
+static int fwq_ix;
 
-START_TEST(test_login_hash)
+void fw_query_init()
 {
-	char ans[16];
-	char good[] = "\x2A\x8A\x12\xB4\xE0\x42\xEE\xAB\xD0\x19\x17\x1E\x44\xA0\x88\xCD";
-	char pass[32] = "iodine is the shit";
-	int len;
-	int seed;
-
-	len = 16;
-	seed = 15;
-
-	memset(ans, 0, sizeof(ans));
-	login_calculate(ans, len, pass, seed);
-	fail_unless(strncmp(ans, good, len) == 0, NULL);
+	memset(fwq, 0, sizeof(struct fw_query) * FW_QUERY_CACHE_SIZE);
+	fwq_ix = 0;
 }
-END_TEST
 
-TCase *
-test_login_create_tests()
+void fw_query_put(struct fw_query *fw_query)
 {
-	TCase *tc;
+	memcpy(&(fwq[fwq_ix]), fw_query, sizeof(struct fw_query));
+	
+	++fwq_ix;
+	if (fwq_ix >= FW_QUERY_CACHE_SIZE) 
+		fwq_ix = 0;
+}
 
-	tc = tcase_create("Login");
-	tcase_add_test(tc, test_login_hash);
+void fw_query_get(short query_id, struct fw_query **fw_query)
+{
+	int i;
 
-	return tc;
+	*fw_query = NULL;
+	for (i = 0; i < FW_QUERY_CACHE_SIZE; i++) {
+		if (fwq[i].id == query_id) {
+			*fw_query = &(fwq[i]);
+			return;
+		}
+	}
 }

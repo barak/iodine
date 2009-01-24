@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2007 Bjorn Andersson <flex@kryo.se>, Erik Ekman <yarrick@kryo.se>
+ * Copyright (c) 2006-2009 Bjorn Andersson <flex@kryo.se>, Erik Ekman <yarrick@kryo.se>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -54,7 +54,7 @@ main()
 	suite_add_tcase(iodine, test);
 
 	runner = srunner_create(iodine);
-	srunner_run_all(runner, CK_MINIMAL);
+	srunner_run_all(runner, CK_NORMAL);
 	failed = srunner_ntests_failed(runner);
 
 	srunner_free(runner);

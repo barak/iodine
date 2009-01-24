@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2007 Bjorn Andersson <flex@kryo.se>, Erik Ekman <yarrick@kryo.se>
+ * Copyright (c) 2006-2009 Bjorn Andersson <flex@kryo.se>, Erik Ekman <yarrick@kryo.se>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -35,22 +35,59 @@
 
 struct user users[USERS];
 
-void
-init_users(in_addr_t my_ip)
+int
+init_users(in_addr_t my_ip, int netbits)
 {
 	int i;
+	int skip = 0;
 	char newip[16];
+	int created_users = 0;
+
+	int maxusers;
+
+	in_addr_t netmask = 0;
+	struct in_addr net;
+	struct in_addr ipstart;
+
+	for (i = 0; i < netbits; i++) {
+		netmask = (netmask << 1) | 1;
+	}
+	netmask <<= (32 - netbits);
+	net.s_addr = htonl(netmask);
+	ipstart.s_addr = my_ip & net.s_addr;
+
+	maxusers = (1 << (32-netbits)) - 3; /* 3: Net addr, broadcast addr, iodined addr */
 	
 	memset(users, 0, USERS * sizeof(struct user));
 	for (i = 0; i < USERS; i++) {
+		in_addr_t ip;
 		users[i].id = i;
-		snprintf(newip, sizeof(newip), "0.0.0.%d", i + 1);
-		users[i].tun_ip = my_ip + inet_addr(newip);;
+		snprintf(newip, sizeof(newip), "0.0.0.%d", i + skip + 1);
+		ip = ipstart.s_addr + inet_addr(newip);
+		if (ip == my_ip && skip == 0) {
+			/* This IP was taken by iodined */
+			skip++;
+			snprintf(newip, sizeof(newip), "0.0.0.%d", i + skip + 1);
+			ip = ipstart.s_addr + inet_addr(newip);
+		}
+		users[i].tun_ip = ip;
+		net.s_addr = ip;
+		if (maxusers--  < 1) {
+			users[i].disabled = 1;
+		} else {
+			users[i].disabled = 0;
+			created_users++;
+		}
 		users[i].inpacket.len = 0;
 		users[i].inpacket.offset = 0;
 		users[i].outpacket.len = 0;
 		users[i].q.id = 0;
+		users[i].out_acked_seqno = 0;
+		users[i].out_acked_fragment = 0;
+		users[i].fragsize = 4096;
 	}
+
+	return created_users;
 }
 
 int
@@ -61,7 +98,8 @@ users_waiting_on_reply()
 
 	ret = 0;
 	for (i = 0; i < USERS; i++) {
-		if (users[i].active && users[i].last_pkt + 60 > time(NULL) &&
+		if (users[i].active && !users[i].disabled && 
+			users[i].last_pkt + 60 > time(NULL) &&
 			users[i].q.id != 0) {
 			ret++;
 		}
@@ -78,7 +116,8 @@ find_user_by_ip(uint32_t ip)
 
 	ret = -1;
 	for (i = 0; i < USERS; i++) {
-		if (users[i].active && users[i].last_pkt + 60 > time(NULL) &&
+		if (users[i].active && !users[i].disabled &&
+			users[i].last_pkt + 60 > time(NULL) &&
 			ip == users[i].tun_ip) {
 			ret = i;
 			break;
@@ -97,7 +136,8 @@ all_users_waiting_to_send()
 	ret = 1;
 	now = time(NULL);
 	for (i = 0; i < USERS; i++) {
-		if (users[i].active && users[i].last_pkt + 60 > now &&
+		if (users[i].active && !users[i].disabled &&
+			users[i].last_pkt + 60 > now &&
 			users[i].outpacket.len == 0) {
 			ret = 0;
 			break;
@@ -113,7 +153,7 @@ find_available_user()
 	int i;
 	for (i = 0; i < USERS; i++) {
 		/* Not used at all or not used in one minute */
-		if (!users[i].active || users[i].last_pkt + 60 < time(NULL)) {
+		if ((!users[i].active || users[i].last_pkt + 60 < time(NULL)) && !users[i].disabled) {
 			users[i].active = 1;
 			users[i].last_pkt = time(NULL);
 			ret = i;
@@ -123,3 +163,11 @@ find_available_user()
 	return ret;
 }
 
+void
+user_switch_codec(int userid, struct encoder *enc)
+{
+	if (userid < 0 || userid >= USERS)
+		return;
+	
+	users[userid].encoder = enc;
+}

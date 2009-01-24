@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2007 Bjorn Andersson <flex@kryo.se>, Erik Ekman <yarrick@kryo.se>
+ * Copyright (c) 2006-2009 Bjorn Andersson <flex@kryo.se>, Erik Ekman <yarrick@kryo.se>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -23,6 +23,8 @@ struct encoder {
 	int (*decode) (void *, size_t *, const char *, size_t);
 	int (*places_dots) (void);
 	int (*eats_dots) (void);
+	int (*blocksize_raw)(void);
+	int (*blocksize_encoded)(void);
 };
 
 int unpack_data(char *, size_t, char *, size_t, struct encoder *);

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2007 Bjorn Andersson <flex@kryo.se>, Erik Ekman <yarrick@kryo.se>
+ * Copyright (c) 2006-2009 Bjorn Andersson <flex@kryo.se>, Erik Ekman <yarrick@kryo.se>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -30,7 +30,7 @@ static struct tuple
 	char *b;
 } testpairs[] = {
 	{ "iodinetestingtesting", "Aw8KAw4LDgvZDgLUz2rLC2rPBMC" },
-	{ "abc123", "ywjJmtiZ" },
+	{ "abc1231", "ywjJmtiZmq" },
 	{
 	  "\xFF\xEF\x7C\xEF\xAE\x78\xDF\x6D\x74\xCF\x2C\x70\xBE\xEB\x6C\xAE\xAA\x68"
 	  "\x9E\x69\x64\x8E\x28\x60\x7D\xE7\x5C\x6D\xA6\x58\x5D\x65\x54\x4D\x24\x50"
@@ -41,9 +41,9 @@ static struct tuple
 	  "\xBE\xEB\x6C\xAE\xAA\x68\x9E\x69\x64\x8E\x28\x60\x7D\xE7\x5C\x6D\xA6\x58"
 	  "\x5D\x65\x54\x4D\x24\x50\x3C\xE3\x4C\x2C\xA2\x48\x1C\x61\x44\x0C\x20\x40",
 
-	  "9abba876543210-ZYXWVUTSRQPONMLKJIHGFEDCBAzyxwvutsrqponmlkjihgfe999dcbapZ"
-	  "776543210-ZYXWVUTSRQPONMLKJIHGFEDCBAzyxwvutsrqponmlkjihgfedcba9abba87654"
-	  "3210-ZYXWVUTSRQPONMLKJIHGFEDCBAzyxwvutsrqponmlkjihgfe999dcba"
+	  "+9876543210-ZYXWVUTSRQPONMLKJIHGFEDCBAzyxwvutsrqponmlkjihgfedcbapZ"
+	  "776543210-ZYXWVUTSRQPONMLKJIHGFEDCBAzyxwvutsrqponmlkjihgfedcba+987654"
+	  "3210-ZYXWVUTSRQPONMLKJIHGFEDCBAzyxwvutsrqponmlkjihgfedcba"
 	},
 	{
 	  "\xFF\xEF\x7C\xEF\xAE\x78\xDF\x6D\x74\xCF\x2C\x70\xBE\xEB\x6C\xAE\xAA\x68"
@@ -55,8 +55,8 @@ static struct tuple
 	  "\xBE\xEB\x6C\xAE\xA1\x61\x91\x61\x61\x81\x28\x60\x7D\xE7\x5C\x6D\xA6\x58"
 	  "\x5D\x65\x54\x4D\x24\x50\x3C\xE3\x4C\x2C\xA2\x48\x1C\x61\x44\x0C\x20\x40",
 
-	  "9IJJI876543210-ZYXWVUTSRQPONMLK9LMJIHGFEDCBAzyxwvutsrqponmlkjihgfedcbapZ"
-	  "776543210-ZYXWVUTSRQfHKwfHGsHGFEDCBAzyxwvutsrqponmlkjihgfedcbaML87654321"
+	  "+9876543210-ZYXWVUTSRQPONMLKJIHGFEDCBAzyxwvutsrqponmlkjihgfedcbapZ"
+	  "776543210-ZYXWVUTSRQfHKwfHGsHGFEDCBAzyxwvutsrqponmlkjihgfedcba+987654321"
 	  "0-ZYXWVUTSRQfHKwfHGsHGFEDCBAzyxwvutsrqponmlkjihgfedcba"
 	},
 	{ NULL, NULL }
@@ -66,12 +66,15 @@ START_TEST(test_base64_encode)
 {
 	size_t len;
 	char buf[4096];
+	struct encoder *b64;
 	int val;
 	int i;
 
+	b64 = get_base64_encoder();
+
 	for (i = 0; testpairs[i].a != NULL; i++) {
 		len = sizeof(buf);
-		val = base64_encode(buf, &len, testpairs[i].a, strlen(testpairs[i].a));
+		val = b64->encode(buf, &len, testpairs[i].a, strlen(testpairs[i].a));
 
 		fail_unless(val > 0, strerror(errno));
 		fail_unless(strcmp(buf, testpairs[i].b) == 0,
@@ -84,12 +87,15 @@ START_TEST(test_base64_decode)
 {
 	size_t len;
 	char buf[4096];
+	struct encoder *b64;
 	int val;
 	int i;
 
+	b64 = get_base64_encoder();
+
 	for (i = 0; testpairs[i].a != NULL; i++) {
 		len = sizeof(buf);
-		val = base64_decode(buf, &len, testpairs[i].b, strlen(testpairs[i].b));
+		val = b64->decode(buf, &len, testpairs[i].b, strlen(testpairs[i].b));
 
 		fail_unless(val > 0, strerror(errno));
 		fail_unless(buf != NULL, "buf == NULL");

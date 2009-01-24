@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2007 Bjorn Andersson <flex@kryo.se>, Erik Ekman <yarrick@kryo.se>
+ * Copyright (c) 2006-2009 Bjorn Andersson <flex@kryo.se>, Erik Ekman <yarrick@kryo.se>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -35,7 +35,7 @@ inline_dotify(char *buf, size_t buflen)
 	char *reader, *writer;
 
 	total = strlen(buf);
-	dots = total / 62;
+	dots = total / 57;
 
 	writer = buf;
 	writer += total;
@@ -52,12 +52,12 @@ inline_dotify(char *buf, size_t buflen)
 	pos = (unsigned) (reader - buf) + 1;
 
 	while (dots) {
-		if (pos % 62 == 0) {
+		*writer-- = *reader--;
+		pos--;
+		if (pos % 57 == 0) {
 			*writer-- = '.';
 			dots--;
 		}
-		*writer-- = *reader--;
-		pos--;
 	}
 
 	/* return new length of string */

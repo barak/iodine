@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2007 Bjorn Andersson <flex@kryo.se>, Erik Ekman <yarrick@kryo.se>
+ * Copyright (c) 2006-2009 Bjorn Andersson <flex@kryo.se>, Erik Ekman <yarrick@kryo.se>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -18,8 +18,7 @@
 #define __BASE32_H__
 
 struct encoder *get_base32_encoder(void);
-int base32_handles_dots();
-int base32_encode(char *, size_t *, const void *, size_t);
-int base32_decode(void *, size_t *, const char *, size_t);
 
+int b32_5to8(int);
+int b32_8to5(int);
 #endif

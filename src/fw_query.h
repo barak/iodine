@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2009 Bjorn Andersson <flex@kryo.se>, Erik Ekman <yarrick@kryo.se>
+ * Copyright (c) 2008 Erik Ekman <yarrick@kryo.se>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,36 +14,23 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <check.h>
-#include <string.h>
+#ifndef __FW_QUERY_H__
+#define __FW_QUERY_H__
 
-#include "test.h"
-#include "login.h"
+#include <sys/types.h>
+#include <sys/socket.h>
 
-START_TEST(test_login_hash)
-{
-	char ans[16];
-	char good[] = "\x2A\x8A\x12\xB4\xE0\x42\xEE\xAB\xD0\x19\x17\x1E\x44\xA0\x88\xCD";
-	char pass[32] = "iodine is the shit";
-	int len;
-	int seed;
+#define FW_QUERY_CACHE_SIZE 16
 
-	len = 16;
-	seed = 15;
+struct fw_query {
+	struct sockaddr addr;
+	int addrlen;
+	short id;
+};
 
-	memset(ans, 0, sizeof(ans));
-	login_calculate(ans, len, pass, seed);
-	fail_unless(strncmp(ans, good, len) == 0, NULL);
-}
-END_TEST
+void fw_query_init();
+void fw_query_put(struct fw_query *fw_query);
+void fw_query_get(short query_id, struct fw_query **fw_query);
 
-TCase *
-test_login_create_tests()
-{
-	TCase *tc;
+#endif /*__FW_QUERY_H__*/
 
-	tc = tcase_create("Login");
-	tcase_add_test(tc, test_login_hash);
-
-	return tc;
-}
