@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2007 Bjorn Andersson <flex@kryo.se>, Erik Ekman <yarrick@kryo.se>
+ * Copyright (c) 2006-2009 Bjorn Andersson <flex@kryo.se>, Erik Ekman <yarrick@kryo.se>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -20,6 +20,7 @@
 #include <arpa/inet.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <netinet/in.h>
 
 #ifndef MIN
 #define MIN(a,b) ((a)<(b)?(a):(b))
@@ -30,18 +31,29 @@
 
 #define QUERY_NAME_SIZE 256
 
+#if defined IP_RECVDSTADDR 
+# define DSTADDR_SOCKOPT IP_RECVDSTADDR 
+# define dstaddr(x) ((struct in_addr *) CMSG_DATA(x)) 
+#elif defined IP_PKTINFO 
+# define DSTADDR_SOCKOPT IP_PKTINFO 
+# define dstaddr(x) (&(((struct in_pktinfo *)(CMSG_DATA(x)))->ipi_addr)) 
+#endif
+
 struct packet 
 {
 	int len;		/* Total packet length */
 	int sentlen;		/* Length of chunk currently transmitted */
 	int offset;		/* Current offset */
 	char data[64*1024];	/* The data */
+	char seqno;		/* The packet sequence number */
+	char fragment;		/* Fragment index */
 };
 
 struct query {
 	char name[QUERY_NAME_SIZE];
-	short type;
-	short id;
+	unsigned short type;
+	unsigned short id;
+	struct in_addr destination;
 	struct sockaddr from;
 	int fromlen;
 };

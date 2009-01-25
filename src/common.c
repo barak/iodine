@@ -1,4 +1,4 @@
-/* Copyright (c) 2006-2007 Bjorn Andersson <flex@kryo.se>, Erik Ekman <yarrick@kryo.se>
+/* Copyright (c) 2006-2009 Bjorn Andersson <flex@kryo.se>, Erik Ekman <yarrick@kryo.se>
  * Copyright (c) 2007 Albert Lee <trisk@acm.jhu.edu>.
  *
  * Permission to use, copy, modify, and distribute this software for any
@@ -74,6 +74,14 @@ static int daemon(int nochdir, int noclose)
 }
 #endif
 
+#if defined(__BEOS__) && !defined(__HAIKU__)
+int setgroups(int count, int *groups)
+{
+	/* errno = ENOSYS; */
+	return -1;
+}
+#endif
+
 int 
 open_dns(int localport, in_addr_t listen_ip) 
 {
@@ -96,6 +104,9 @@ open_dns(int localport, in_addr_t listen_ip)
 #endif
 	setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &flag, sizeof(flag));
 
+	/* To get destination address from each UDP datagram, see iodined.c:read_dns() */
+	setsockopt(fd, IPPROTO_IP, DSTADDR_SOCKOPT, &flag, sizeof(flag));
+
 	if(bind(fd, (struct sockaddr*)&addr, sizeof(addr)) < 0) 
 		err(1, "bind");
 
@@ -113,11 +124,15 @@ close_dns(int fd)
 void
 do_chroot(char *newroot)
 {
+#if !defined(__BEOS__) || defined(__HAIKU__)
 	if (chroot(newroot) != 0 || chdir("/") != 0)
 		err(1, "%s", newroot);
 
 	seteuid(geteuid());
 	setuid(getuid());
+#else
+	warnx("chroot not available");
+#endif
 }
 
 void

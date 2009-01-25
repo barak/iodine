@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2007 Bjorn Andersson <flex@kryo.se>, Erik Ekman <yarrick@kryo.se>
+ * Copyright (c) 2006-2009 Bjorn Andersson <flex@kryo.se>, Erik Ekman <yarrick@kryo.se>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -21,7 +21,7 @@ int open_tun(const char *);
 void close_tun(int);
 int write_tun(int, char *, size_t);
 ssize_t read_tun(int, char *, size_t);
-int tun_setip(const char *);
-int tun_setmtu(const size_t);
+int tun_setip(const char *, int);
+int tun_setmtu(const unsigned);
 
 #endif /* _TUN_H_ */

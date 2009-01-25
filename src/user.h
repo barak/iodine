@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2007 Bjorn Andersson <flex@kryo.se>, Erik Ekman <yarrick@kryo.se>
+ * Copyright (c) 2006-2009 Bjorn Andersson <flex@kryo.se>, Erik Ekman <yarrick@kryo.se>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -17,11 +17,12 @@
 #ifndef __USER_H__
 #define __USER_H__
 
-#define USERS 8
+#define USERS 16
 
 struct user {
 	char id;
 	int active;
+	int disabled;
 	time_t last_pkt;
 	int seed;
 	in_addr_t tun_ip;
@@ -30,14 +31,18 @@ struct user {
 	struct packet inpacket;
 	struct packet outpacket;
 	struct encoder *encoder;
+	int out_acked_seqno;
+	int out_acked_fragment;
+	int fragsize;
 };
 
 extern struct user users[USERS];
 
-void init_users(in_addr_t);
+int init_users(in_addr_t, int);
 int users_waiting_on_reply();
 int find_user_by_ip(uint32_t);
 int all_users_waiting_to_send();
 int find_available_user();
+void user_switch_codec(int userid, struct encoder *enc);
 
 #endif

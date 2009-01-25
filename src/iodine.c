@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2007 Bjorn Andersson <flex@kryo.se>, Erik Ekman <yarrick@kryo.se>
+ * Copyright (c) 2006-2009 Bjorn Andersson <flex@kryo.se>, Erik Ekman <yarrick@kryo.se>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -40,6 +40,7 @@
 #include "common.h"
 #include "encoding.h"
 #include "base32.h"
+#include "base64.h"
 #include "dns.h"
 #include "login.h"
 #include "tun.h"
@@ -58,9 +59,17 @@ static struct sockaddr_in nameserv;
 static char *topdomain;
 
 static uint16_t rand_seed;
+static int downstream_seqno;
+static int downstream_fragment;
+static int down_ack_seqno;
+static int down_ack_fragment;
 
-/* Current IP packet */
-static struct packet packet;
+static int max_downstream_frag_size;
+static int autodetect_frag_size;
+
+/* Current up/downstream IP packet */
+static struct packet outpkt;
+static struct packet inpkt;
 
 /* My userid at the server */
 static char userid;
@@ -123,10 +132,9 @@ build_hostname(char *buf, size_t buflen,
 	size_t space;
 	char *b;
 
-
-	space = MIN(0xFF, buflen) - strlen(topdomain) - 2;
+	space = MIN(0xFF, buflen) - strlen(topdomain) - 5;
 	if (!encoder->places_dots())
-		space -= (space / 62); /* space for dots */
+		space -= (space / 57); /* space for dots */
 
 	memset(buf, 0, buflen);
 	
@@ -146,13 +154,13 @@ build_hostname(char *buf, size_t buflen,
 	return space;
 }
 
-int
+static int
 is_sending()
 {
-	return (packet.len != 0);
+	return (outpkt.len != 0);
 }
 
-int
+static int
 read_dns(int fd, char *buf, int buflen)
 {
 	struct sockaddr_in from;
@@ -171,17 +179,37 @@ read_dns(int fd, char *buf, int buflen)
 
 	rv = dns_decode(buf, buflen, &q, QR_ANSWER, data, r);
 
-	if (is_sending() && chunkid == q.id) {
-		/* Got ACK on sent packet */
-		packet.offset += packet.sentlen;
-		if (packet.offset == packet.len) {
-			/* Packet completed */
-			packet.offset = 0;
-			packet.len = 0;
-			packet.sentlen = 0;
-		} else {
-			/* More to send */
-			send_chunk(fd);
+	/* decode the data header, update seqno and frag before next request */
+	if (rv >= 2) {
+		downstream_seqno = (buf[1] >> 5) & 7;
+		downstream_fragment = (buf[1] >> 1) & 15;
+	}
+
+
+	if (is_sending()) {
+		if (chunkid == q.id) {
+			/* Got ACK on sent packet */
+			outpkt.offset += outpkt.sentlen;
+			if (outpkt.offset == outpkt.len) {
+				/* Packet completed */
+				outpkt.offset = 0;
+				outpkt.len = 0;
+				outpkt.sentlen = 0;
+
+				/* If the ack contains unacked frag number but no data, 
+				 * send a ping to ack the frag number and get more data*/
+				if (rv == 2 && (
+					downstream_seqno != down_ack_seqno ||
+					downstream_fragment != down_ack_fragment
+					)) {
+					
+					send_ping(fd);
+				}
+			} else {
+				/* More to send */
+				send_chunk(fd);
+			}
+
 		}
 	}
 	return rv;
@@ -204,10 +232,12 @@ tunnel_tun(int tun_fd, int dns_fd)
 	inlen = read;
 	compress2((uint8_t*)out, &outlen, (uint8_t*)in, inlen, 9);
 
-	memcpy(packet.data, out, MIN(outlen, sizeof(packet.data)));
-	packet.sentlen = 0;
-	packet.offset = 0;
-	packet.len = outlen;
+	memcpy(outpkt.data, out, MIN(outlen, sizeof(outpkt.data)));
+	outpkt.sentlen = 0;
+	outpkt.offset = 0;
+	outpkt.len = outlen;
+	outpkt.seqno++;
+	outpkt.fragment = 0;
 
 	send_chunk(dns_fd);
 
@@ -217,21 +247,40 @@ tunnel_tun(int tun_fd, int dns_fd)
 static int
 tunnel_dns(int tun_fd, int dns_fd)
 {
-	unsigned long outlen;
-	unsigned long inlen;
-	char out[64*1024];
-	char in[64*1024];
+	unsigned long datalen;
+	char buf[64*1024];
 	size_t read;
 
-	if ((read = read_dns(dns_fd, in, sizeof(in))) <= 0) 
-		return -1;
-		
-	outlen = sizeof(out);
-	inlen = read;
-	if (uncompress((uint8_t*)out, &outlen, (uint8_t*)in, inlen) != Z_OK)
+	if ((read = read_dns(dns_fd, buf, sizeof(buf))) <= 2) 
 		return -1;
 
-	write_tun(tun_fd, out, outlen);
+	if (downstream_seqno != inpkt.seqno) {
+		/* New packet */
+		inpkt.seqno = downstream_seqno;
+		inpkt.fragment = downstream_fragment;
+		inpkt.len = 0;
+	} else if (downstream_fragment <= inpkt.fragment) {
+		/* Duplicate fragment */
+		return -1;
+	}
+	inpkt.fragment = downstream_fragment;
+
+	datalen = MIN(read - 2, sizeof(inpkt.data) - inpkt.len);
+
+	/* Skip 2 byte data header and append to packet */
+	memcpy(&inpkt.data[inpkt.len], &buf[2], datalen);
+	inpkt.len += datalen;
+
+	if (buf[1] & 1) { /* If last fragment flag is set */
+		/* Uncompress packet and send to tun */
+		datalen = sizeof(buf);
+		if (uncompress((uint8_t*)buf, &datalen, (uint8_t*) inpkt.data, inpkt.len) == Z_OK) {
+			write_tun(tun_fd, buf, datalen);
+		}
+		inpkt.len = 0;
+	}
+
+	/* If we have nothing to send, send a ping to get more data */
 	if (!is_sending()) 
 		send_ping(dns_fd);
 	
@@ -252,9 +301,11 @@ tunnel(int tun_fd, int dns_fd)
 		tv.tv_sec = 1;
 		tv.tv_usec = 0;
 
+
 		FD_ZERO(&fds);
-		if (!is_sending()) 
+		if (!is_sending()) {
 			FD_SET(tun_fd, &fds);
+		}
 		FD_SET(dns_fd, &fds);
 
 		i = select(MAX(tun_fd, dns_fd) + 1, &fds, NULL, NULL, &tv);
@@ -291,24 +342,33 @@ send_chunk(int fd)
 	int code;
 	char *p;
 
-	p = packet.data;
-	p += packet.offset;
-	avail = packet.len - packet.offset;
+	p = outpkt.data;
+	p += outpkt.offset;
+	avail = outpkt.len - outpkt.offset;
 
-	packet.sentlen = build_hostname(buf + 1, sizeof(buf) - 1, p, avail, topdomain, dataenc);
+	outpkt.sentlen = build_hostname(buf + 4, sizeof(buf) - 4, p, avail, topdomain, dataenc);
 
-	if (packet.sentlen == avail)
-		code = 1;
-	else
-		code = 0;
-		
-	code |= (userid << 1);
-	buf[0] = hex[code];
+	/* Build upstream data header (see doc/proto_xxxxxxxx.txt) */
 
+	buf[0] = hex[userid & 15]; /* First byte is 4 bits userid */
+
+	code = ((outpkt.seqno & 7) << 2) | ((outpkt.fragment & 15) >> 2);
+	buf[1] = b32_5to8(code); /* Second byte is 3 bits seqno, 2 upper bits fragment count */
+
+	code = ((outpkt.fragment & 3) << 3) | (downstream_seqno & 7);
+	buf[2] = b32_5to8(code); /* Third byte is 2 bits lower fragment count, 3 bits downstream packet seqno */
+
+	code = ((downstream_fragment & 15) << 1) | (outpkt.sentlen == avail);
+	buf[3] = b32_5to8(code); /* Fourth byte is 4 bits downstream fragment count, 1 bit last frag flag */
+
+	down_ack_seqno = downstream_seqno;
+	down_ack_fragment = downstream_fragment;
+
+	outpkt.fragment++;
 	send_query(fd, buf);
 }
 
-void
+static void
 send_login(int fd, char *login, int len)
 {
 	char data[19];
@@ -328,24 +388,66 @@ send_login(int fd, char *login, int len)
 static void
 send_ping(int fd)
 {
-	char data[3];
+	char data[4];
 	
 	if (is_sending()) {
-		packet.sentlen = 0;
-		packet.offset = 0;
-		packet.len = 0;
+		outpkt.sentlen = 0;
+		outpkt.offset = 0;
+		outpkt.len = 0;
 	}
 
 	data[0] = userid;
-	data[1] = (rand_seed >> 8) & 0xff;
-	data[2] = (rand_seed >> 0) & 0xff;
+	data[1] = ((downstream_seqno & 7) << 4) | (downstream_fragment & 15);
+	data[2] = (rand_seed >> 8) & 0xff;
+	data[3] = (rand_seed >> 0) & 0xff;
+	
+	down_ack_seqno = downstream_seqno;
+	down_ack_fragment = downstream_fragment;
 	
 	rand_seed++;
 
 	send_packet(fd, 'P', data, sizeof(data));
 }
 
-void 
+static void
+send_fragsize_probe(int fd, int fragsize)
+{
+	char probedata[256];
+	char buf[4096];
+
+	/* build a large query domain which is random and maximum size */
+	memset(probedata, MIN(1, rand_seed & 0xff), sizeof(probedata));
+	probedata[1] = MIN(1, (rand_seed >> 8) & 0xff);
+	rand_seed++;
+	build_hostname(buf + 4, sizeof(buf) - 4, probedata, sizeof(probedata), topdomain, dataenc);
+
+	fragsize &= 2047;
+
+	buf[0] = 'r'; /* Probe downstream fragsize packet */
+	buf[1] = b32_5to8((userid << 1) | (fragsize & 1024));
+	buf[2] = b32_5to8((fragsize >> 5) & 31);
+	buf[3] = b32_5to8(fragsize & 31);
+
+	send_query(fd, buf);
+}
+
+static void
+send_set_downstream_fragsize(int fd, int fragsize)
+{
+	char data[5];
+	
+	data[0] = userid;
+	data[1] = (fragsize & 0xff00) >> 8;
+	data[2] = (fragsize & 0x00ff);
+	data[3] = (rand_seed >> 8) & 0xff;
+	data[4] = (rand_seed >> 0) & 0xff;
+	
+	rand_seed++;
+
+	send_packet(fd, 'N', data, sizeof(data));
+}
+
+static void 
 send_version(int fd, uint32_t version)
 {
 	char data[6];
@@ -363,11 +465,25 @@ send_version(int fd, uint32_t version)
 	send_packet(fd, 'V', data, sizeof(data));
 }
 
-void
+static void
 send_case_check(int fd)
 {
-	char buf[512] = "zZaAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyY123-4560789.";
+	/* The '+' plus character is not allowed according to RFC. 
+	 * Expect to get SERVFAIL or similar if it is rejected.
+	 */
+	char buf[512] = "zZ+-aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyY1234.";
 
+	strncat(buf, topdomain, 512 - strlen(buf));
+	send_query(fd, buf);
+}
+
+static void
+send_codec_switch(int fd, int userid, int bits)
+{
+	char buf[512] = "S__.";
+	buf[1] = b32_5to8(userid);
+	buf[2] = b32_5to8(bits);
+	
 	strncat(buf, topdomain, 512 - strlen(buf));
 	send_query(fd, buf);
 }
@@ -420,18 +536,18 @@ handshake(int dns_fd)
 					seed = payload;
 					userid = in[8];
 
-					printf("Version ok, both running 0x%08x. You are user #%d\n", VERSION, userid);
+					printf("Version ok, both using protocol v 0x%08x. You are user #%d\n", VERSION, userid);
 					goto perform_login;
 				} else if (strncmp("VNAK", in, 4) == 0) {
-					errx(1, "you run 0x%08x, server runs 0x%08x. giving up\n", 
+					warnx("You use protocol v 0x%08x, server uses v 0x%08x. Giving up", 
 							VERSION, payload);
-					/* NOTREACHED */
+					return 1;
 				} else if (strncmp("VFUL", in, 4) == 0) {
-					errx(1, "server full, all %d slots are taken. try again later\n", payload);
-					/* NOTREACHED */
+					warnx("Server full, all %d slots are taken. Try again later", payload);
+					return 1;
 				}
 			} else 
-				warnx("did not receive proper login challenge\n");
+				warnx("did not receive proper login challenge");
 		}
 		
 		printf("Retrying version check...\n");
@@ -462,15 +578,16 @@ perform_login:
 			}
 
 			if (read > 0) {
+				int netmask;
 				if (strncmp("LNAK", in, 4) == 0) {
 					printf("Bad password\n");
 					return 1;
-				} else if (sscanf(in, "%64[^-]-%64[^-]-%d", 
-					server, client, &mtu) == 3) {
+				} else if (sscanf(in, "%64[^-]-%64[^-]-%d-%d", 
+					server, client, &mtu, &netmask) == 4) {
 					
 					server[64] = 0;
 					client[64] = 0;
-					if (tun_setip(client) == 0 && 
+					if (tun_setip(client, netmask) == 0 && 
 						tun_setmtu(mtu) == 0) {
 						goto perform_case_check;
 					} else {
@@ -484,8 +601,8 @@ perform_login:
 
 		printf("Retrying login...\n");
 	}
-	errx(1, "couldn't login to server");
-	/* NOTREACHED */
+	warnx("couldn't login to server");
+	return 1;
 
 perform_case_check:
 	case_preserved = 0;
@@ -503,30 +620,30 @@ perform_case_check:
 		if(r > 0) {
 			read = read_dns(dns_fd, in, sizeof(in));
 			
-			if(read <= 0) {
-				warn("read");
-				continue;
-			}
-
 			if (read > 0) {
 				if (in[0] == 'z' || in[0] == 'Z') {
-					if (read < (26 * 2)) {
-						printf("Received short case reply...\n");
+					if (read < (27 * 2)) {
+						printf("Received short case check reply. Will use base32 encoder\n");
+						goto switch_codec;
 					} else {
 						int k;
 
+						/* TODO enhance this, base128 is probably also possible */
 						case_preserved = 1;
-						for (k = 0; k < 26 && case_preserved; k += 2) {
+						for (k = 0; k < 27 && case_preserved; k += 2) {
 							if (in[k] == in[k+1]) {
-								/* test string: zZaAbBcCdD... */
+								/* test string: zZ+-aAbBcCdDeE... */
 								case_preserved = 0;
 							}
 						}
-						return 0;
+						goto switch_codec;
 					}
 				} else {
 					printf("Received bad case check reply\n");
 				}
+			} else {
+				printf("Got error on case check, will use base32\n");
+				goto switch_codec;
 			}
 		}
 
@@ -534,9 +651,141 @@ perform_case_check:
 	}
 
 	printf("No reply on case check, continuing\n");
+switch_codec:
+	if (!case_preserved)
+		goto autodetect_max_fragsize;
+
+	dataenc = get_base64_encoder();
+	printf("Switching to %s codec\n", dataenc->name);
+	/* Send to server that this user will use base64 from now on */
+	for (i=0; running && i<5 ;i++) {
+		int bits;
+		tv.tv_sec = i + 1;
+		tv.tv_usec = 0;
+
+		bits = 6; /* base64 = 6 bits per byte */
+
+		send_codec_switch(dns_fd, userid, bits);
+		
+		FD_ZERO(&fds);
+		FD_SET(dns_fd, &fds);
+
+		r = select(dns_fd + 1, &fds, NULL, NULL, &tv);
+
+		if(r > 0) {
+			read = read_dns(dns_fd, in, sizeof(in));
+			
+			if (read > 0) {
+				if (strncmp("BADLEN", in, 6) == 0) {
+					printf("Server got bad message length. ");
+					goto codec_revert;
+				} else if (strncmp("BADIP", in, 5) == 0) {
+					printf("Server rejected sender IP address. ");
+					goto codec_revert;
+				} else if (strncmp("BADCODEC", in, 8) == 0) {
+					printf("Server rejected the selected codec. ");
+					goto codec_revert;
+				}
+				in[read] = 0; /* zero terminate */
+				printf("Server switched to codec %s\n", in);
+				goto autodetect_max_fragsize;
+			}
+		}
+		printf("Retrying codec switch...\n");
+	}
+	printf("No reply from server on codec switch. ");
+codec_revert: 
+	printf("Falling back to base32\n");
+	dataenc = get_base32_encoder();
+autodetect_max_fragsize:
+	if (autodetect_frag_size) {
+		int proposed_fragsize = 768;
+		int range = 768;
+		max_downstream_frag_size = 0;
+		printf("Autoprobing max downstream fragment size... (skip with -m fragsize)\n"); 
+		while (running && range > 0 && (range >= 8 || !max_downstream_frag_size)) {
+			for (i=0; running && i<3 ;i++) {
+				tv.tv_sec = 1;
+				tv.tv_usec = 0;
+				send_fragsize_probe(dns_fd, proposed_fragsize);
+
+				FD_ZERO(&fds);
+				FD_SET(dns_fd, &fds);
+
+				r = select(dns_fd + 1, &fds, NULL, NULL, &tv);
+
+				if(r > 0) {
+					read = read_dns(dns_fd, in, sizeof(in));
+					
+					if (read > 0) {
+						/* We got a reply */
+						int acked_fragsize = ((in[0] & 0xff) << 8) | (in[1] & 0xff);
+						if (acked_fragsize == proposed_fragsize) {
+							printf("%d ok.. ", acked_fragsize);
+							fflush(stdout);
+							max_downstream_frag_size = acked_fragsize;
+							range >>= 1;
+							proposed_fragsize += range;
+							continue;
+						}
+					}
+				}
+			}
+			printf("%d not ok.. ", proposed_fragsize);
+			fflush(stdout);
+			range >>= 1;
+			proposed_fragsize -= range;
+		}
+		if (!running) {
+			printf("\n");
+			warnx("stopped while autodetecting fragment size (Try probing manually with -m)");
+			return 1;
+		}
+		if (range == 0) {
+			/* Tried all the way down to 2 and found no good size */
+			printf("\n");
+			warnx("found no accepted fragment size. (Try probing manually with -m)");
+			return 1;
+		}
+		printf("will use %d\n", max_downstream_frag_size);
+	}
+	printf("Setting downstream fragment size to max %d...\n", max_downstream_frag_size);
+	for (i=0; running && i<5 ;i++) {
+		tv.tv_sec = i + 1;
+		tv.tv_usec = 0;
+
+		send_set_downstream_fragsize(dns_fd, max_downstream_frag_size);
+		
+		FD_ZERO(&fds);
+		FD_SET(dns_fd, &fds);
+
+		r = select(dns_fd + 1, &fds, NULL, NULL, &tv);
+
+		if(r > 0) {
+			read = read_dns(dns_fd, in, sizeof(in));
+			
+			if (read > 0) {
+				int accepted_fragsize;
+
+				if (strncmp("BADFRAG", in, 7) == 0) {
+					printf("Server rejected fragsize. Keeping default.");
+					goto done;
+				} else if (strncmp("BADIP", in, 5) == 0) {
+					printf("Server rejected sender IP address.\n");
+					goto done;
+				}
+
+				accepted_fragsize = ((in[0] & 0xff) << 8) | (in[1] & 0xff);
+				goto done;
+			}
+		}
+		printf("Retrying set fragsize...\n");
+	}
+	printf("No reply from server when setting fragsize. Keeping default.\n");
+done:
 	return 0;
 }
-		
+
 static char *
 get_resolvconf_addr()
 {
@@ -583,7 +832,7 @@ usage() {
 	extern char *__progname;
 
 	printf("Usage: %s [-v] [-h] [-f] [-u user] [-t chrootdir] [-d device] "
-			"[nameserver] topdomain\n", __progname);
+			"[-P password] [-m maxfragsize] [nameserver] topdomain\n", __progname);
 	exit(2);
 }
 
@@ -593,7 +842,7 @@ help() {
 
 	printf("iodine IP over DNS tunneling client\n");
 	printf("Usage: %s [-v] [-h] [-f] [-u user] [-t chrootdir] [-d device] "
-			"[-P password] [nameserver] topdomain\n", __progname);
+			"[-P password] [-m maxfragsize] [nameserver] topdomain\n", __progname);
 	printf("  -v to print version info and exit\n");
 	printf("  -h to print this help and exit\n");
 	printf("  -f to keep running in foreground\n");
@@ -601,6 +850,7 @@ help() {
 	printf("  -t dir to chroot to directory dir\n");
 	printf("  -d device to set tunnel device name\n");
 	printf("  -P password used for authentication (max 32 chars will be used)\n");
+	printf("  -m maxfragsize, to limit size of downstream packets\n");
 	printf("nameserver is the IP number of the relaying nameserver, if absent /etc/resolv.conf is used\n");
 	printf("topdomain is the FQDN that is delegated to the tunnel endpoint.\n");
 
@@ -609,9 +859,8 @@ help() {
 
 static void
 version() {
-
 	printf("iodine IP over DNS tunneling client\n");
-	printf("version: 0.4.2 from 2008-08-06\n");
+	printf("version: 0.5.0 from 2009-01-23\n");
 
 	exit(0);
 }
@@ -636,6 +885,12 @@ main(int argc, char **argv)
 	device = NULL;
 	chunkid = 0;
 
+	outpkt.seqno = 0;
+	inpkt.len = 0;
+
+	autodetect_frag_size = 1;
+	max_downstream_frag_size = 3072;
+
 	b32 = get_base32_encoder();
 	dataenc = get_base32_encoder();
 	
@@ -647,16 +902,18 @@ main(int argc, char **argv)
 		__progname++;
 #endif
 
-	while ((choice = getopt(argc, argv, "vfhu:t:d:P:")) != -1) {
+	while ((choice = getopt(argc, argv, "vfhu:t:d:P:m:")) != -1) {
 		switch(choice) {
 		case 'v':
 			version();
+			/* NOTREACHED */
 			break;
 		case 'f':
 			foreground = 1;
 			break;
 		case 'h':
 			help();
+			/* NOTREACHED */
 			break;
 		case 'u':
 			username = optarg;
@@ -674,6 +931,10 @@ main(int argc, char **argv)
 			/* XXX: find better way of cleaning up ps(1) */
 			memset(optarg, 0, strlen(optarg)); 
 			break;
+		case 'm':
+			autodetect_frag_size = 0;
+			max_downstream_frag_size = atoi(optarg);
+			break;
 		default:
 			usage();
 			/* NOTREACHED */
@@ -683,6 +944,7 @@ main(int argc, char **argv)
 	if (geteuid() != 0) {
 		warnx("Run as root and you'll be happy.\n");
 		usage();
+		/* NOTREACHED */
 	}
 
 	argc -= optind;
@@ -702,22 +964,31 @@ main(int argc, char **argv)
 		/* NOTREACHED */
 	}
 
+	if (max_downstream_frag_size < 1 || max_downstream_frag_size > 0xffff) {
+		warnx("Use a max frag size between 1 and 65535 bytes.\n");
+		usage();
+		/* NOTREACHED */
+	}
+
 	set_nameserver(nameserv_addr);
 
 	if(strlen(topdomain) <= 128) {
 		if(check_topdomain(topdomain)) {
 			warnx("Topdomain contains invalid characters.\n");
 			usage();
+			/* NOTREACHED */
 		}
 	} else {
 		warnx("Use a topdomain max 128 chars long.\n");
 		usage();
+		/* NOTREACHED */
 	}
 
 	if (username != NULL) {
 		if ((pw = getpwnam(username)) == NULL) {
 			warnx("User %s does not exist!\n", username);
 			usage();
+			/* NOTREACHED */
 		}
 	}
 	
@@ -749,8 +1020,14 @@ main(int argc, char **argv)
 		if (setgroups(1, gids) < 0 || setgid(pw->pw_gid) < 0 || setuid(pw->pw_uid) < 0) {
 			warnx("Could not switch to user %s!\n", username);
 			usage();
+			/* NOTREACHED */
 		}
 	}
+	
+	downstream_seqno = 0;
+	downstream_fragment = 0;
+	down_ack_seqno = 0;
+	down_ack_fragment = 0;
 	
 	tunnel(tun_fd, dns_fd);
 

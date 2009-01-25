@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2007 Bjorn Andersson <flex@kryo.se>, Erik Ekman <yarrick@kryo.se>
+ * Copyright (c) 2006-2009 Bjorn Andersson <flex@kryo.se>, Erik Ekman <yarrick@kryo.se>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -25,6 +25,8 @@ typedef enum {
 } qr_t;
 
 int dns_encode(char *, size_t, struct query *, qr_t, char *, size_t);
+int dns_encode_ns_response(char *buf, size_t buflen, struct query *q, char *topdomain);
+short dns_get_id(char *packet, size_t packetlen);
 int dns_decode(char *, size_t, struct query *, qr_t, char *, size_t);
 
 #endif /* _DNS_H_ */
