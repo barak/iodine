@@ -5,7 +5,7 @@ Upstream-Maintainer: Bjorn Andersson <flex@kryo.se>, Erik Ekman <yarrick@kryo.se
 Upstream-Source: http://code.kryo.se/iodine
 
 Files: *
-Copyright: © 2006-2007 Bjorn Andersson <flex@kryo.se>,
+Copyright: © 2006-2009 Bjorn Andersson <flex@kryo.se>,
  Erik Ekman <yarrick@kryo.se>
 License: MIT
 
