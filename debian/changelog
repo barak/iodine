@@ -2,6 +2,7 @@ iodine (0.5.0-1) UNRELEASED; urgency=low
 
   * New upstream release.
   * debian/copyright: update years of upstream copyright.
+  * Install the new protocol descriptions under doc/*.
 
  -- gregor herrmann <gregoa@debian.org>  Sun, 25 Jan 2009 01:00:02 +0100
 
