@@ -1,13 +1,14 @@
-iodine (0.5.0-1) UNRELEASED; urgency=low
+iodine (0.5.0-1) experimental; urgency=low
 
   * New upstream release.
   * debian/copyright: update years of upstream copyright.
   * Install the new protocol descriptions under doc/*.
   * Refresh patch 03_cflags.patch; drop patch 04_base64.patch, the base64
     stuff is used now.
-  
+  * Upload to experimenatal since (1) we are in the pre-lenny freeze and
+    (2) we had problems with the base64 components on hppa.
 
- -- gregor herrmann <gregoa@debian.org>  Sun, 25 Jan 2009 01:00:02 +0100
+ -- gregor herrmann <gregoa@debian.org>  Sun, 25 Jan 2009 01:31:09 +0100
 
 iodine (0.4.2-3) unstable; urgency=low
 
