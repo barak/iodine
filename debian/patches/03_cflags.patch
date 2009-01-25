@@ -6,19 +6,19 @@ Description: Combine upstream CFLAGS with CFLAGS from debian/rules.
  ARCH = `uname -m`
  
  LDFLAGS =  -lz `sh osflags link`
--CFLAGS = -c -g -Wall -D$(OS) -pedantic
-+CFLAGS += -c -D$(OS) -pedantic
+-CFLAGS = -c -g -Wall -D$(OS) -pedantic `sh osflags cflags`
++CFLAGS += -c -D$(OS) -pedantic `sh osflags cflags`
  
  all: stateos $(CLIENT) $(SERVER)
  
 --- a/tests/Makefile
 +++ b/tests/Makefile
-@@ -6,7 +6,7 @@
- OS = `uname | tr "a-z" "A-Z"`
+@@ -7,7 +7,7 @@
  
- LDFLAGS =  -L/usr/local/lib -lcheck
--CFLAGS = -g -Wall -D$(OS) -I../src -I/usr/local/include -pedantic
-+CFLAGS += -D$(OS) -I../src -I/usr/local/include -pedantic
+ CHECK_PATH = /usr/local
+ LDFLAGS = -L$(CHECK_PATH)/lib -lcheck `../src/osflags link`
+-CFLAGS = -g -Wall -D$(OS) -I../src -I$(CHECK_PATH)/include -pedantic `../src/osflags cflags`
++CFLAGS += -D$(OS) -I../src -I$(CHECK_PATH)/include -pedantic `../src/osflags cflags`
  
  all: $(TEST)
- 	@./$(TEST)
+ 	@LD_LIBRARY_PATH=${CHECK_PATH}/lib ./$(TEST)

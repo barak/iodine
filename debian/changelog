@@ -3,6 +3,9 @@ iodine (0.5.0-1) UNRELEASED; urgency=low
   * New upstream release.
   * debian/copyright: update years of upstream copyright.
   * Install the new protocol descriptions under doc/*.
+  * Refresh patch 03_cflags.patch; drop patch 04_base64.patch, the base64
+    stuff is used now.
+  
 
  -- gregor herrmann <gregoa@debian.org>  Sun, 25 Jan 2009 01:00:02 +0100
 
