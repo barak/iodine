@@ -1,3 +1,11 @@
+iodine (0.5.0-2) UNRELEASED; urgency=low
+
+  * Update example script iodine-jigger; thanks to Stephan Walter for the bug
+    report and to Barak A. Pearlmutter for the updated version; add gawk to
+    Suggests (closes: #513221).
+
+ -- gregor herrmann <gregoa@debian.org>  Thu, 29 Jan 2009 17:38:07 +0100
+
 iodine (0.5.0-1) experimental; urgency=low
 
   * New upstream release.
