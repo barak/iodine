@@ -3,6 +3,7 @@ iodine (0.5.1-1) UNRELEASED; urgency=low
   * New upstream release.
   * Refresh 03_cflags.patch.
   * Set Standards-Version to 3.8.1 (no changes).
+  * debian/copyright: add an additional copyright holder.
 
  -- gregor herrmann <gregoa@debian.org>  Sat, 21 Mar 2009 18:28:06 +0100
 

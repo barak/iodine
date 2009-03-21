@@ -31,6 +31,11 @@ License: other
  L. Peter Deutsch
  ghost@aladdin.com
 
+Files: src/common.c
+Copyright: © 2006-2009 Bjorn Andersson <flex@kryo.se>, Erik Ekman <yarrick@kryo.se>
+ © 2007 Albert Lee <trisk@acm.jhu.edu>
+License: MIT
+
 Files: debian/*
 Copyright:
  © 2007-2009, gregor herrmann <gregoa@debian.org>
