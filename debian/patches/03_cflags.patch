@@ -2,12 +2,12 @@ Author: <gregor+debian@comodo.priv.at>
 Description: Combine upstream CFLAGS with CFLAGS from debian/rules.
 --- a/src/Makefile
 +++ b/src/Makefile
-@@ -9,7 +9,7 @@
- ARCH = `uname -m`
+@@ -10,7 +10,7 @@
  
- LDFLAGS =  -lz `sh osflags link`
--CFLAGS = -c -g -Wall -D$(OS) -pedantic `sh osflags cflags`
-+CFLAGS += -c -D$(OS) -pedantic `sh osflags cflags`
+ LIBPATH = -L.
+ LDFLAGS =  -lz `sh osflags $(TARGETOS) link` $(LIBPATH)
+-CFLAGS = -c -g -Wall -D$(OS) -pedantic `sh osflags $(TARGETOS) cflags`
++CFLAGS += -c -D$(OS) -pedantic `sh osflags $(TARGETOS) cflags`
  
  all: stateos $(CLIENT) $(SERVER)
  
