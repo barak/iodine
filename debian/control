@@ -4,7 +4,7 @@ Priority: extra
 Maintainer: gregor herrmann <gregoa@debian.org>
 Uploaders: tony mancill <tmancill@debian.org>
 Build-Depends: debhelper (>= 7), po-debconf, zlib1g-dev, quilt (>= 0.40), check
-Standards-Version: 3.8.0
+Standards-Version: 3.8.1
 Homepage: http://code.kryo.se/iodine
 Vcs-Svn: http://svn.toastfreeware.priv.at/debian/iodine/trunk/
 Vcs-Browser: http://svn.toastfreeware.priv.at/wsvn/ToastfreewareDebian/iodine/trunk/
