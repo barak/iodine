@@ -1,3 +1,10 @@
+iodine (0.5.1-2) UNRELEASED; urgency=low
+
+  * (Re-)add a warning to README.Debian that both client and server needs to
+    run the same protocol version (cf. #521260).
+
+ -- gregor herrmann <gregoa@debian.org>  Thu, 26 Mar 2009 17:17:07 +0100
+
 iodine (0.5.1-1) unstable; urgency=low
 
   * New upstream release.
