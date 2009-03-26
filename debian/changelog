@@ -2,6 +2,8 @@ iodine (0.5.1-2) UNRELEASED; urgency=low
 
   * (Re-)add a warning to README.Debian that both client and server needs to
     run the same protocol version (cf. #521260).
+  * Create /var/run/iodine in init script if it doesn't exist; thanks to
+    martin f krafft for the bug report (closes: #521259).
 
  -- gregor herrmann <gregoa@debian.org>  Thu, 26 Mar 2009 17:17:07 +0100
 
