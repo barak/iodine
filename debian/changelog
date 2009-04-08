@@ -2,7 +2,7 @@ iodine (0.5.1-2~bpo50+1) lenny-backports; urgency=low
 
   * Rebuild for lenny-backports: We want to have 0.5.x available for lenny,
     both clients and servery need to run the same protocol version
-    (cf. #521260).
+    (closes: #521260).
 
  -- gregor herrmann <gregoa@debian.org>  Wed, 08 Apr 2009 17:47:05 +0200
 
