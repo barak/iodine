@@ -1,0 +1,152 @@
+iodine (0.4.2-2+lenny1) stable; urgency=low
+
+  * Add patch 05_segfault.patch to prevent iodined from segfaulting when a
+    5.x client connects. Thanks to Albert Sellarès for the patch
+    (closes: #521260).
+
+ -- gregor herrmann <gregoa@debian.org>  Sat, 02 May 2009 19:26:08 +0200
+
+iodine (0.4.2-2) unstable; urgency=low
+
+  * debian/postinst: only try to create /dev/net/tun if it doesn't exist and
+    if /dev/MAKEDEV is available; thanks to Lucas Nussbaum for the bug report
+    and to Lucas, Adeodato Simó, Matthew Johnson, and Alexander Wirt for their
+    help (closes: #502823).
+
+ -- gregor herrmann <gregoa@debian.org>  Wed, 22 Oct 2008 23:35:25 +0200
+
+iodine (0.4.2-1) unstable; urgency=low
+
+  * New upstream release:
+    - new command line switch "-s" to skip configration of the tun interface
+      (closes: #477692)
+    - drop patches 01_mandir.patch and 02_make.patch, included upstream
+    - refresh patches 03_cflags.patch and 04_base64.patch
+  * debian/rules: separate DESTDIR and prefix on make install.
+  * Add the packages needed by the example script to Suggests: and don't
+    compress the example script any more.
+
+ -- gregor herrmann <gregoa@debian.org>  Fri, 08 Aug 2008 16:33:26 -0300
+
+iodine (0.4.1-4) unstable; urgency=low
+
+  * Add Czech debconf translation, thanks to Daniel Kavan
+    (closes: #483299).
+  * Add note for translators to debconf template and change back localized
+    versions of ".example" to the original as mandated by RFC 2606.
+  * Convert de.po from ISO-8859-1 to UTF-8.
+  * debian/control: change my email address.
+  * Switch patch system from dpatch to quilt.
+  * Add example script iodine-jigger (script to set up an iodine tunnel and
+    route traffic through it) by Barak A. Pearlmutter (closes: #491294).
+    Thanks, Barak! Add copyright/license information about the script to
+    debian/copyright. Mention the example script in README.Debian.
+  * debian/copyright: wrap a long line, update years of packing copyright and
+    my email address.
+  * Set Standards-Version to 3.8.0; add debian/README.source to document
+    quilt usage.
+
+ -- gregor herrmann <gregoa@debian.org>  Thu, 24 Jul 2008 18:35:59 +0200
+
+iodine (0.4.1-3) unstable; urgency=low
+
+  * Fix LSB header in init.d script, thanks to Petter Reinholdtsen for the
+    report and the patch (closes: #468653).
+  * Set debhelper compatibility level to 6.
+  * New patch 04_base64: don't build/test {src,tests}/base64* anymore, causes
+    a FBTFS on hppa, and isn't actually used anyway (closes: #468404).
+
+ -- gregor herrmann <gregor+debian@comodo.priv.at>  Sat, 01 Mar 2008 19:01:22 +0100
+
+iodine (0.4.1-2) unstable; urgency=low
+
+  * Set Standards-Version to 3.7.3 (no changes required).
+  * Create install-stamp target in debian/rules and adjust target
+    dependencies.
+  * Change debian/copyright to the new machine-readable format.
+  * Add patch 03_cflags.dpatch: use CFLAGS from debian/rules in upstream
+    Makefiles.
+
+ -- gregor herrmann <gregor+debian@comodo.priv.at>  Tue, 05 Feb 2008 17:31:25 +0100
+
+iodine (0.4.1-1) unstable; urgency=low
+
+  * New upstream release:
+    - hides password from ps and stdin (closes: #432719).
+    - uses /etc/resolv.conf (closes: #432867).
+    - incorporates patch to daemonize before chrooting and dropping
+      privileges, therefore dropping 02_detach.dpatch.
+    - uses $(MAKE) in Makefile, except in one case, therefore adding patch
+      02_make.dpatch.
+    - fixes the install dir for the manpage, therefore adapting patch
+      01_mandir.dpatch.
+  * debian/copyright: update years of copyright.
+  * debian/rules: use $(DPATCH_STAMPFN) and $@.
+  * Mention (improved) manpage in README.Debian.
+
+ -- gregor herrmann <gregor+debian@comodo.priv.at>  Sat, 01 Dec 2007 02:30:51 +0100
+
+iodine (0.4.0-5) unstable; urgency=low
+
+  * Apply patch for "init script fails to restart", thanks to Horst
+    Schirmeier (closes: #453001).
+  * debian/rules: make configure-stamp depend on patch.
+
+ -- gregor herrmann <gregor+debian@comodo.priv.at>  Mon, 26 Nov 2007 20:36:41 +0100
+
+iodine (0.4.0-4) unstable; urgency=low
+
+  * Add French debconf translation, thanks to Christian Perrier
+    (closes: #434323).
+  * Add Dutch debconf translation, thanks to Bart Cornelis
+    (closes: #451396).
+  * Clean up debian/rules.
+  * Don't install TODO anymore, and remove debian/docs.
+  * Move upstream URL from the description to the new Homepage field.
+  * Change XS-Vcs-* fields to Vcs-*.
+  * Add patch to daemonize before chrooting and dropping privileges, thanks
+    to Matthew William Solloway Bell (closes: #450759).
+
+ -- gregor herrmann <gregor+debian@comodo.priv.at>  Fri, 16 Nov 2007 12:48:50 +0100
+
+iodine (0.4.0-3) unstable; urgency=low
+
+  * Add Portuguese translation for debconf messages, thanks to Américo
+    Monteiro and Miguel Figueiredo (closes: #433041).
+  * Add German debconf translation, thanks to Helge Kreutzmann
+    (closes: #433296).
+  * Fix typo in debconf template, thanks to Helge Kreutzmann
+    (closes: #433297).
+  * Add debconf-updatepo to debian/rule's clean target.
+  * Convert debian/changelog to UTF-8.
+  * Fix usage of MAKEDEV, thanks to Marco d'Itri (closes: #434160).
+
+ -- gregor herrmann <gregor+debian@comodo.priv.at>  Sun, 22 Jul 2007 16:27:51 +0200
+
+iodine (0.4.0-2) unstable; urgency=low
+
+  * Change mode of /etc/default/iodine to 600, thanks to Lennart Poettering
+    (cf. #432719).
+
+ -- gregor herrmann <gregor+debian@comodo.priv.at>  Wed, 11 Jul 2007 18:10:12 +0200
+
+iodine (0.4.0-1) unstable; urgency=low
+
+  * Initial upload to the Debian archive (closes: #430206).
+  * New upstream release.
+  * Fix debian/watch.
+  * Don't create manpages anymore, now included in upstream tarball.
+  * Change debian/rules; upstream Makefile now includes install and test targets.
+  * Move makedev from Build-Depends to Depends.
+  * Add password option to debconf questions and /etc/default/iodine.
+  * Change order in postinst.
+  * Add user iodine and run iodined in a chroot as this user.
+
+ -- gregor herrmann <gregor+debian@comodo.priv.at>  Sat, 23 Jun 2007 14:49:46 +0200
+
+iodine (0.3.4-1) unstable; urgency=low
+
+  * Initial release.
+
+ -- gregor herrmann <gregor+debian@comodo.priv.at>  Fri, 26 Jan 2007 14:03:30 +0100
+

@@ -1,0 +1,24 @@
+Author: <gregor+debian@comodo.priv.at>
+Description: Combine upstream CFLAGS with CFLAGS from debian/rules.
+--- a/src/Makefile
++++ b/src/Makefile
+@@ -9,7 +9,7 @@
+ ARCH = `uname -m`
+ 
+ LDFLAGS =  -lz `sh osflags link`
+-CFLAGS = -c -g -Wall -D$(OS) -pedantic
++CFLAGS += -c -D$(OS) -pedantic
+ 
+ all: stateos $(CLIENT) $(SERVER)
+ 
+--- a/tests/Makefile
++++ b/tests/Makefile
+@@ -6,7 +6,7 @@
+ OS = `uname | tr "a-z" "A-Z"`
+ 
+ LDFLAGS =  -L/usr/local/lib -lcheck
+-CFLAGS = -g -Wall -D$(OS) -I../src -I/usr/local/include -pedantic
++CFLAGS += -D$(OS) -I../src -I/usr/local/include -pedantic
+ 
+ all: $(TEST)
+ 	@./$(TEST)

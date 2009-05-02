@@ -1,0 +1,36 @@
+Author: <gregor+debian@comodo.priv.at>
+Description: Don't build/test base64.*; causes a build failure on hppa,
+and isn't used anyway.
+--- a/src/Makefile
++++ b/src/Makefile
+@@ -1,5 +1,5 @@
+ CC = gcc
+-COMMONOBJS = tun.o dns.o read.o encoding.o login.o base32.o base64.o md5.o common.o
++COMMONOBJS = tun.o dns.o read.o encoding.o login.o base32.o md5.o common.o
+ CLIENTOBJS = iodine.o
+ CLIENT = ../bin/iodine
+ SERVEROBJS = iodined.o user.o
+--- a/tests/Makefile
++++ b/tests/Makefile
+@@ -1,7 +1,7 @@
+ CC = gcc
+ TEST = test
+-OBJS = test.o base32.o base64.o read.o dns.o encoding.o login.o user.o 
+-SRCOBJS = ../src/base32.o  ../src/base64.o ../src/read.o ../src/dns.o ../src/encoding.o ../src/login.o ../src/md5.o ../src/user.o
++OBJS = test.o base32.o read.o dns.o encoding.o login.o user.o
++SRCOBJS = ../src/base32.o ../src/read.o ../src/dns.o ../src/encoding.o ../src/login.o ../src/md5.o ../src/user.o
+ 
+ OS = `uname | tr "a-z" "A-Z"`
+ 
+--- a/tests/test.c
++++ b/tests/test.c
+@@ -35,9 +35,6 @@
+ 	test = test_base32_create_tests();
+ 	suite_add_tcase(iodine, test);
+ 
+-	test = test_base64_create_tests();
+-	suite_add_tcase(iodine, test);
+-
+ 	test = test_dns_create_tests();
+ 	suite_add_tcase(iodine, test);
+ 

@@ -1,0 +1,36 @@
+Author: Albert Sellarès <whats@wekk.net>
+Bug: #521260
+Description: prevent iodined from segfaulting during version check
+             when a 5.x client connects
+
+--- a/src/iodined.c
++++ b/src/iodined.c
+@@ -189,7 +189,6 @@
+ 					   ((unpacked[3] & 0xff)));
+ 		}
+ 
+-		if (version == VERSION) {
+ 			userid = find_available_user();
+ 			if (userid >= 0) {
+ 				struct sockaddr_in *tempin;
+@@ -201,15 +200,16 @@
+ 				
+ 				memcpy(&(users[userid].q), q, sizeof(struct query));
+ 				users[userid].encoder = get_base32_encoder();
+-				send_version_response(dns_fd, VERSION_ACK, users[userid].seed, &users[userid]);
++        		if (version == VERSION) {
++					send_version_response(dns_fd, VERSION_ACK, users[userid].seed, &users[userid]);
++        		} else {
++		        	send_version_response(dns_fd, VERSION_NACK, VERSION, &users[userid]);
++        		}
+ 				users[userid].q.id = 0;
+ 			} else {
+ 				/* No space for another user */
+ 				send_version_response(dns_fd, VERSION_FULL, USERS, NULL);
+ 			}
+-		} else {
+-			send_version_response(dns_fd, VERSION_NACK, VERSION, NULL);
+-		}
+ 	} else if(in[0] == 'L' || in[0] == 'l') {
+ 		read = unpack_data(unpacked, sizeof(unpacked), &(in[1]), read - 1, b32);
+ 		/* Login phase, handle auth */
