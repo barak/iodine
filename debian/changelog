@@ -1,8 +1,8 @@
-iodine (0.5.2-1) UNRELEASED; urgency=low
+iodine (0.5.2-1) unstable; urgency=low
 
   * New upstream release.
 
- -- gregor herrmann <gregoa@debian.org>  Tue, 02 Jun 2009 17:37:02 +0200
+ -- gregor herrmann <gregoa@debian.org>  Tue, 02 Jun 2009 18:03:31 +0200
 
 iodine (0.5.1-2) unstable; urgency=low
 
