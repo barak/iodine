@@ -1,6 +1,7 @@
 iodine (0.5.2-2) UNRELEASED; urgency=low
 
   * Add Russian debconf translation, thanks to Yuri Kozlov (closes: #546345).
+  * Set Standards-Version to 3.8.3 (no changes).
 
  -- gregor herrmann <gregoa@debian.org>  Sun, 13 Sep 2009 00:49:03 +0200
 
