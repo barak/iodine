@@ -1,31 +1,17 @@
 #!/usr/bin/make -f
 
-include /usr/share/quilt/quilt.make
+%:
+	dh --with quilt $@
 
-build: build-stamp
-build-stamp: $(QUILT_STAMPFN)
-	dh build
-	touch build-stamp
-
-clean: unpatch
+override_dh_auto_clean:
 	debconf-updatepo
-	dh clean
+	dh_auto_clean
 
-install: build install-stamp
-install-stamp:
-	dh install --before dh_auto_install
-	$(MAKE) install DESTDIR=$(CURDIR)/debian/iodine prefix=/usr
-	dh install --after dh_auto_install --before dh_compress
+override_dh_auto_install:
+	dh_auto_install -- DESTDIR=$(CURDIR)/debian/iodine prefix=/usr
+
+override_dh_compress:
 	dh_compress -Xiodine-jigger
-	dh install --after dh_compress --before dh_installinit
+
+override_dh_installinit:
 	dh_installinit --name=iodined
-	dh install --after dh_installinit
-	touch install-stamp
-
-binary-arch: install
-	dh binary-arch
-
-binary-indep: install
-	dh binary-indep
-
-binary: binary-arch binary-indep
