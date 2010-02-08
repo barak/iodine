@@ -1,0 +1,14 @@
+Author: gregor herrmann <gregoa@debian.org>
+Description: spelling mistake in the manpage
+
+--- a/man/iodine.8
++++ b/man/iodine.8
+@@ -148,7 +148,7 @@
+ .B tunnel_ip[/netmask]
+ This is the servers ip address on the tunnel interface. The client will be
+ given the next ip number in the range. It is recommended to use the 
+-10.0.0.0 or 172.16.0.0 ranges. The default netmask is /27, can be overriden
++10.0.0.0 or 172.16.0.0 ranges. The default netmask is /27, can be overridden
+ by specifying it here. Using a smaller network will limit the number of
+ concurrent users.
+ .TP

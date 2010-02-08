@@ -6,6 +6,7 @@ iodine (0.5.2-3) UNRELEASED; urgency=low
     the name in the relevant locations and integrate a newer version.
   * debian/copyright: update formatting.
   * Set Standards-Version to 3.8.4 (no changes).
+  * New patch spelling.patch: fix a minore spelling mistake in the manpage.
 
  -- gregor herrmann <gregoa@debian.org>  Thu, 26 Nov 2009 16:31:53 +0100
 
