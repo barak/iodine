@@ -11,7 +11,7 @@ override_dh_auto_install:
 	dh_auto_install -- DESTDIR=$(CURDIR)/debian/iodine prefix=/usr
 
 override_dh_compress:
-	dh_compress -Xiodine-jigger
+	dh_compress -Xiodine-client-start
 
 override_dh_installinit:
 	dh_installinit --name=iodined

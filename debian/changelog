@@ -1,7 +1,9 @@
 iodine (0.5.2-3) UNRELEASED; urgency=low
 
-  * Add Russian debconf translation, thanks to Hideki Yamane
+  * Add Japanese debconf translation, thanks to Hideki Yamane
     (closes: #558051).
+  * The example script iodine-jigger is now called iodine-client-start; update
+    the name in the relevant locations and integrate a newer version.
 
  -- gregor herrmann <gregoa@debian.org>  Thu, 26 Nov 2009 16:31:53 +0100
 

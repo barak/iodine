@@ -42,9 +42,10 @@ Copyright:
  © 2007-2009, tony mancill <tmancill@debian.org>
 License: GPL-1+
 
-Files: debian/iodine-jigger
+Files: debian/iodine-client-start
 Copyright: © 2008 Barak A. Pearlmutter <bap@debian.org>
 License: MIT
+X-Source: git://github.com/barak/iodine-client-start.git
 
 License: MIT
  Permission to use, copy, modify, and distribute this software for
