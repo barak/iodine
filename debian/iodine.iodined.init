@@ -27,10 +27,6 @@ CHROOTDIR=/var/run/iodine
 # Exit if the package is not installed
 [ -x "$DAEMON" ] || exit 0
 
-# Read configuration variable file or exit
-[ -r /etc/default/$DEFAULT ] || exit 0
-. /etc/default/$DEFAULT
-
 # Load the VERBOSE setting and other rcS variables
 . /lib/init/vars.sh
 
@@ -40,6 +36,7 @@ CHROOTDIR=/var/run/iodine
 
 # Get config
 get_config() {
+	[ -r /etc/default/$DEFAULT ] && . /etc/default/$DEFAULT
 	if [ "$START_IODINED" != "true" ] ; then
 		[ "$VERBOSE" != no ] && log_progress_msg "- automatic start disabled" && log_end_msg 0
 		exit 0
