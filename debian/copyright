@@ -1,12 +1,11 @@
-Format-Specification:
- http://wiki.debian.org/Proposals/CopyrightFormat?action=recall&rev=196
-Upstream-Name: iodine
-Upstream-Maintainer: Bjorn Andersson <flex@kryo.se>, Erik Ekman <yarrick@kryo.se>
-Upstream-Source: http://code.kryo.se/iodine
+Format-Specification: http://svn.debian.org/wsvn/dep/web/deps/dep5.mdwn?op=file&rev=135
+Maintainer: Bjorn Andersson <flex@kryo.se>, Erik Ekman <yarrick@kryo.se>
+Source: http://code.kryo.se/iodine
+Name: iodine
 
 Files: *
-Copyright: © 2006-2009 Bjorn Andersson <flex@kryo.se>,
- Erik Ekman <yarrick@kryo.se>
+Copyright: © 2006-2009, Bjorn Andersson <flex@kryo.se>
+ © 2006-2009, Erik Ekman <yarrick@kryo.se>
 License: MIT
 
 Files: src/md5.*
@@ -32,14 +31,15 @@ License: other
  ghost@aladdin.com
 
 Files: src/common.c
-Copyright: © 2006-2009 Bjorn Andersson <flex@kryo.se>, Erik Ekman <yarrick@kryo.se>
+Copyright: © 2006-2009, Bjorn Andersson <flex@kryo.se>
+ © 2006-2009, Erik Ekman <yarrick@kryo.se>
  © 2007 Albert Lee <trisk@acm.jhu.edu>
 License: MIT
 
 Files: debian/*
 Copyright:
- © 2007-2009, gregor herrmann <gregoa@debian.org>
- © 2007-2009, tony mancill <tmancill@debian.org>
+ © 2007-2010, gregor herrmann <gregoa@debian.org>
+ © 2007-2010, tony mancill <tmancill@debian.org>
 License: GPL-1+
 
 Files: debian/iodine-client-start

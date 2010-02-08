@@ -4,6 +4,7 @@ iodine (0.5.2-3) UNRELEASED; urgency=low
     (closes: #558051).
   * The example script iodine-jigger is now called iodine-client-start; update
     the name in the relevant locations and integrate a newer version.
+  * debian/copyright: update formatting.
 
  -- gregor herrmann <gregoa@debian.org>  Thu, 26 Nov 2009 16:31:53 +0100
 
