@@ -1,9 +1,9 @@
-iodine (0.5.2-4) UNRELEASED; urgency=low
+iodine (0.5.2-4) unstable; urgency=low
 
   * Include updated iodine-client-start script and install it into /usr/sbin.
     Adjust some files and create manpage with help2man.
 
- -- gregor herrmann <gregoa@debian.org>  Wed, 10 Feb 2010 21:35:25 +0100
+ -- gregor herrmann <gregoa@debian.org>  Wed, 10 Feb 2010 22:03:12 +0100
 
 iodine (0.5.2-3) unstable; urgency=low
 
@@ -13,7 +13,7 @@ iodine (0.5.2-3) unstable; urgency=low
     the name in the relevant locations and integrate a newer version.
   * debian/copyright: update formatting.
   * Set Standards-Version to 3.8.4 (no changes).
-  * New patch spelling.patch: fix a minore spelling mistake in the manpage.
+  * New patch spelling.patch: fix a minor spelling mistake in the manpage.
   * Adjust handling of /etc/default/iodine in init script.
 
  -- gregor herrmann <gregoa@debian.org>  Mon, 08 Feb 2010 21:30:54 +0100
