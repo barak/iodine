@@ -1,3 +1,9 @@
+iodine (0.5.2-5) UNRELEASED; urgency=low
+
+  * Update iodine-client-start (01b8c6f).
+
+ -- gregor herrmann <gregoa@debian.org>  Sat, 27 Feb 2010 13:41:12 +0100
+
 iodine (0.5.2-4) unstable; urgency=low
 
   * Include updated iodine-client-start script and install it into /usr/sbin.
