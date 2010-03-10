@@ -1,4 +1,4 @@
-iodine (0.5.2-5) UNRELEASED; urgency=low
+iodine (0.5.2-5) unstable; urgency=low
 
   * Update iodine-client-start (01b8c6f).
   * New patch openlog.patch: move openlog() call before chrooting; thanks to
@@ -6,7 +6,7 @@ iodine (0.5.2-5) UNRELEASED; urgency=low
   * README.Debian: mention /usr/sbin/iodine-client-start now that it's not in
     examples/ anymore.
 
- -- gregor herrmann <gregoa@debian.org>  Sat, 27 Feb 2010 13:41:12 +0100
+ -- gregor herrmann <gregoa@debian.org>  Wed, 10 Mar 2010 18:47:52 +0100
 
 iodine (0.5.2-4) unstable; urgency=low
 
