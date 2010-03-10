@@ -1,6 +1,8 @@
 iodine (0.5.2-5) UNRELEASED; urgency=low
 
   * Update iodine-client-start (01b8c6f).
+  * New patch openlog.patch: move openlog() call before chrooting; thanks to
+    Romain Francoise for the patch (closes: #573194).
 
  -- gregor herrmann <gregoa@debian.org>  Sat, 27 Feb 2010 13:41:12 +0100
 
