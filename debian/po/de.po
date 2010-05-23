@@ -10,6 +10,7 @@ msgstr ""
 "PO-Revision-Date: 2007-07-16 09:23+0200\n"
 "Last-Translator: Helge Kreutzmann <debian@helgefjell.de>\n"
 "Language-Team: German <debian-l10n-german@lists.debian.org>\n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-15\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -44,8 +45,8 @@ msgid ""
 "You need to give the necessary arguments to iodined; see iodined(8) for "
 "help. Example: 10.0.0.1 tunnel.mydomain.example"
 msgstr ""
-"Sie müssen die notwendigen Argumente an Iodined übergeben; lesen Sie iodined"
-"(8) für Hilfe. Beispiel: 10.0.0.1 tunnel.mydomain.example"
+"Sie müssen die notwendigen Argumente an Iodined übergeben; lesen Sie "
+"iodined(8) für Hilfe. Beispiel: 10.0.0.1 tunnel.mydomain.example"
 
 #. Type: password
 #. Description
