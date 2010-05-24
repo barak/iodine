@@ -1,9 +1,9 @@
-iodine (0.5.2-7) UNRELEASED; urgency=low
+iodine (0.5.2-7) unstable; urgency=low
 
   * Add Spanish debconf translation, thanks to Francisco Javier Cuadrado
     (closes: #582872).
 
- -- gregor herrmann <gregoa@debian.org>  Mon, 24 May 2010 18:36:52 +0200
+ -- gregor herrmann <gregoa@debian.org>  Mon, 24 May 2010 18:42:06 +0200
 
 iodine (0.5.2-6) unstable; urgency=low
 
