@@ -26,6 +26,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <fcntl.h>
+#include <errno.h>
 
 #ifdef WINDOWS32
 #include <winsock2.h>
@@ -33,15 +34,24 @@
 #else
 #include <arpa/nameser.h>
 #ifdef DARWIN
-#include <arpa/nameser8_compat.h>
+#define BIND_8_COMPAT
+#include <arpa/nameser_compat.h>
 #endif
 #include <termios.h>
 #include <err.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
+#include <syslog.h>
+#endif
+
+#ifdef HAVE_SETCON
+# include <selinux/selinux.h>
 #endif
 
 #include "common.h"
+
+/* The raw header used when not using DNS protocol */
+const unsigned char raw_header[RAW_HDR_LEN] = { 0x10, 0xd1, 0x9e, 0x00 };
 
 /* daemon(3) exists only in 4.4BSD or later, and in GNU libc */
 #if !defined(WINDOWS32) && !(defined(BSD) && (BSD >= 199306)) && !defined(__GLIBC__)
@@ -161,6 +171,35 @@ do_chroot(char *newroot)
 	setuid(getuid());
 #else
 	warnx("chroot not available");
+#endif
+}
+
+void
+do_setcon(char *context)
+{
+#ifdef HAVE_SETCON
+	if (-1 == setcon(context))
+		err(1, "%s", context);
+#else
+	warnx("No SELinux support built in");
+#endif
+}
+
+void
+do_pidfile(char *pidfile)
+{
+#ifndef WINDOWS32
+	FILE *file;
+
+	if ((file = fopen(pidfile, "w")) == NULL) {
+		syslog(LOG_ERR, "Cannot write pidfile to %s, exiting", pidfile);
+		err(1, "do_pidfile: Can not write pidfile to %s", pidfile);
+	} else {
+		fprintf(file, "%d\n", (int)getpid());
+		fclose(file);
+	}
+#else
+	fprintf(stderr, "Windows version does not support pid file\n");
 #endif
 }
 
@@ -294,3 +333,18 @@ errx(int eval, const char *fmt, ...)
 }
 #endif
 
+
+int recent_seqno(int ourseqno, int gotseqno)
+/* Return 1 if we've seen gotseqno recently (current or up to 3 back).
+   Return 0 if gotseqno is new (or very old).
+*/
+{
+	int i;
+	for (i = 0; i < 4; i++, ourseqno--) {
+		if (ourseqno < 0)
+			ourseqno = 7;
+		if (gotseqno == ourseqno)
+			return 1;
+	}
+	return 0;
+}

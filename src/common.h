@@ -17,15 +17,31 @@
 #ifndef __COMMON_H__
 #define __COMMON_H__
 
+/* Last byte of raw header is the command */
+#define RAW_HDR_LEN 4
+#define RAW_HDR_IDENT_LEN 3
+#define RAW_HDR_CMD 3
+#define RAW_HDR_CMD_LOGIN 0x10
+#define RAW_HDR_CMD_DATA  0x20
+#define RAW_HDR_CMD_PING  0x30
+
+#define RAW_HDR_CMD_MASK  0xF0
+#define RAW_HDR_USR_MASK  0x0F
+#define RAW_HDR_GET_CMD(x) ((x)[RAW_HDR_CMD] & RAW_HDR_CMD_MASK)
+#define RAW_HDR_GET_USR(x) ((x)[RAW_HDR_CMD] & RAW_HDR_USR_MASK)
+extern const unsigned char raw_header[RAW_HDR_LEN];
+
 #ifdef WINDOWS32
 #include "windows.h"
 #else
+#include <sys/types.h>
 #include <sys/socket.h>
 #include <err.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #endif
 
+#define DNS_PORT 53
 
 #ifndef MIN
 #define MIN(a,b) ((a)<(b)?(a):(b))
@@ -58,6 +74,9 @@
 # define DONT_FRAG_VALUE 1
 #endif
 
+#define T_UNSET 65432
+/* Unused RR type; "private use" range, see http://www.bind9.net/dns-parameters */
+
 struct packet 
 {
 	int len;		/* Total packet length */
@@ -71,10 +90,20 @@ struct packet
 struct query {
 	char name[QUERY_NAME_SIZE];
 	unsigned short type;
+	unsigned short rcode;
 	unsigned short id;
 	struct in_addr destination;
 	struct sockaddr from;
 	int fromlen;
+	unsigned short id2;
+	struct sockaddr from2;
+	int fromlen2;
+};
+
+enum connection {
+	CONN_RAW_UDP,
+	CONN_DNS_NULL,
+	CONN_MAX
 };
 
 void check_superuser(void (*usage_fn)(void));
@@ -82,7 +111,9 @@ int open_dns(int, in_addr_t);
 void close_dns(int);
 
 void do_chroot(char *);
+void do_setcon(char *);
 void do_detach();
+void do_pidfile(char *);
 
 void read_password(char*, size_t);
 
@@ -96,5 +127,7 @@ void warn(const char *fmt, ...);
 void errx(int eval, const char *fmt, ...);
 void warnx(const char *fmt, ...);
 #endif
+
+int recent_seqno(int , int);
 
 #endif
