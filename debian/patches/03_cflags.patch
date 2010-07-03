@@ -1,12 +1,16 @@
-Author: <gregor+debian@comodo.priv.at>
-Description: Combine upstream CFLAGS with CFLAGS from debian/rules.
+Description: remove from CFLAGS what gets passed by Debian build system
+Forwarded: no
+Origin: vendor
+Author: gregor herrmann <gregoa@debian.org>
+Last-Update: 2010-07-03
+
 --- a/src/Makefile
 +++ b/src/Makefile
-@@ -10,7 +10,7 @@
+@@ -9,7 +9,7 @@
  
  LIBPATH = -L.
- LDFLAGS =  -lz `sh osflags $(TARGETOS) link` $(LIBPATH)
--CFLAGS = -c -g -Wall -D$(OS) -pedantic `sh osflags $(TARGETOS) cflags`
+ LDFLAGS +=  -lz `sh osflags $(TARGETOS) link` $(LIBPATH)
+-CFLAGS += -c -g -Wall -D$(OS) -pedantic `sh osflags $(TARGETOS) cflags`
 +CFLAGS += -c -D$(OS) -pedantic `sh osflags $(TARGETOS) cflags`
  
  all: stateos $(CLIENT) $(SERVER)

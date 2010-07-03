@@ -6,6 +6,8 @@ iodine (0.6.0~rc1-1) UNRELEASED; urgency=low
     - added support for CNAME/TXT/A/MX query types (closes: #587894)
     - includes the changes we had backported in openlog.patch, so remove the
       patch now
+  * Add new patch manpage.patch (*roff problems). Refresh remaining patches.
+    Improve patch headers (DEP3).
 
  -- gregor herrmann <gregoa@debian.org>  Sat, 03 Jul 2010 18:11:37 +0200
 
