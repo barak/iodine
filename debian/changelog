@@ -4,6 +4,8 @@ iodine (0.6.0~rc1-1) UNRELEASED; urgency=low
   * New upstream release:
     - return nonzero if tunnel fails to open (closes: #534186)
     - added support for CNAME/TXT/A/MX query types (closes: #587894)
+    - includes the changes we had backported in openlog.patch, so remove the
+      patch now
 
  -- gregor herrmann <gregoa@debian.org>  Sat, 03 Jul 2010 18:11:37 +0200
 
