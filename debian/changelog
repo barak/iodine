@@ -8,6 +8,7 @@ iodine (0.6.0~rc1-1) UNRELEASED; urgency=low
       patch now
   * Add new patch manpage.patch (*roff problems). Refresh remaining patches.
     Improve patch headers (DEP3).
+  * Set Standards-Version to 3.9.0 (no changes).
 
  -- gregor herrmann <gregoa@debian.org>  Sat, 03 Jul 2010 18:11:37 +0200
 
