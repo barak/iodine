@@ -32,11 +32,14 @@
 HANDLE dev_handle;
 struct tun_data data;
 
+static void get_name(char *ifname, int namelen, char *dev_name);
+
 #define TAP_CONTROL_CODE(request,method) CTL_CODE(FILE_DEVICE_UNKNOWN, request, method, FILE_ANY_ACCESS)
 #define TAP_IOCTL_CONFIG_TUN       TAP_CONTROL_CODE(10, METHOD_BUFFERED)
 #define TAP_IOCTL_SET_MEDIA_STATUS TAP_CONTROL_CODE(6, METHOD_BUFFERED)
 
 #define TAP_ADAPTER_KEY "SYSTEM\\CurrentControlSet\\Control\\Class\\{4D36E972-E325-11CE-BFC1-08002BE10318}"
+#define NETWORK_KEY "SYSTEM\\CurrentControlSet\\Control\\Network\\{4D36E972-E325-11CE-BFC1-08002BE10318}"
 #define TAP_DEVICE_SPACE "\\\\.\\Global\\"
 #define TAP_VERSION_ID_0801 "tap0801"
 #define TAP_VERSION_ID_0901 "tap0901"
@@ -53,7 +56,7 @@ struct tun_data data;
 #include "tun.h"
 #include "common.h"
 
-char if_name[50];
+char if_name[250];
 
 #ifndef WINDOWS32
 #ifdef LINUX
@@ -112,6 +115,7 @@ open_tun(const char *tun_device)
 
 		warn("open_tun: Couldn't set interface name");
 	}
+	warn("error when opening tun");
 	return -1;
 }
 
@@ -159,7 +163,7 @@ open_tun(const char *tun_device)
 #endif /* !LINUX */
 #else /* WINDOWS32 */
 static void
-get_device(char *device, int device_len)
+get_device(char *device, int device_len, const char *wanted_dev)
 {
 	LONG status;
 	HKEY adapter_key;
@@ -215,7 +219,18 @@ get_device(char *device, int device_len)
 			if (status != ERROR_SUCCESS || datatype != REG_SZ) {
 				warnx("Error reading registry key %s\\%s on TAP device", unit, iid_string);
 			} else {
-				/* Done getting name of TAP device */
+				/* Done getting GUID of TAP device,
+				 * now check if the name is the requested one */
+				if (wanted_dev) {
+					char name[250];
+					get_name(name, sizeof(name), device);
+					if (strncmp(name, wanted_dev, strlen(wanted_dev))) {
+						/* Skip if name mismatch */
+						goto next;
+					}
+				}
+				/* Get the if name */
+				get_name(if_name, sizeof(if_name), device);
 				RegCloseKey(device_key);
 				return;
 			}
@@ -225,6 +240,35 @@ next:
 		index++;
 	}
 	RegCloseKey(adapter_key);
+}
+
+static void
+get_name(char *ifname, int namelen, char *dev_name)
+{
+	char path[256];
+	char name_str[256] = "Name";
+	LONG status;
+	HKEY conn_key;
+	DWORD len;
+	DWORD datatype;
+
+	memset(ifname, 0, namelen);
+
+	snprintf(path, sizeof(path), NETWORK_KEY "\\%s\\Connection", dev_name);
+	status = RegOpenKeyEx(HKEY_LOCAL_MACHINE, path, 0, KEY_READ, &conn_key);
+	if (status != ERROR_SUCCESS) {
+		fprintf(stderr, "Could not look up name of interface %s: error opening key\n", dev_name);
+		RegCloseKey(conn_key);
+		return;
+	}
+	len = namelen;
+	status = RegQueryValueEx(conn_key, name_str, NULL, &datatype, (LPBYTE)ifname, &len);
+	if (status != ERROR_SUCCESS || datatype != REG_SZ) {
+		fprintf(stderr, "Could not look up name of interface %s: error reading value\n", dev_name);
+		RegCloseKey(conn_key);
+		return;
+	}
+	RegCloseKey(conn_key);
 }
 
 DWORD WINAPI tun_reader(LPVOID arg)
@@ -264,22 +308,25 @@ open_tun(const char *tun_device)
 	in_addr_t local;
 
 	memset(adapter, 0, sizeof(adapter));
-	get_device(adapter, sizeof(adapter));
+	memset(if_name, 0, sizeof(if_name));
+	get_device(adapter, sizeof(adapter), tun_device);
 
-	if (strlen(adapter) == 0) {
-		warnx("No TAP adapters found. See README-win32.txt for help.\n");
+	if (strlen(adapter) == 0 || strlen(if_name) == 0) {
+		if (tun_device) {
+			warnx("No TAP adapters found. Try without -d.");
+		} else {
+			warnx("No TAP adapters found. Version 0801 and 0901 are supported.");
+		}
 		return -1;
 	}
 	
+	fprintf(stderr, "Opening device %s\n", if_name);
 	snprintf(tapfile, sizeof(tapfile), "%s%s.tap", TAP_DEVICE_SPACE, adapter);
-	fprintf(stderr, "Opening device %s\n", tapfile);
 	dev_handle = CreateFile(tapfile, GENERIC_WRITE | GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_SYSTEM | FILE_FLAG_OVERLAPPED, NULL);
 	if (dev_handle == INVALID_HANDLE_VALUE) {
+		warnx("Could not open device!");
 		return -1;
 	}
-
-	/* TODO get name of interface */
-	strncpy(if_name, "dns", MIN(4, sizeof(if_name)));
 
 	/* Use a UDP connection to forward packets from tun,
 	 * so we can still use select() in main code.
@@ -361,7 +408,13 @@ read_tun(int tun_fd, char *buf, size_t len)
 	/* FreeBSD/Darwin/NetBSD has no header */
 	int bytes;
 	memset(buf, 0, 4);
+#ifdef WINDOWS32
+	/* Windows needs recv() since it is local UDP socket */
+	bytes = recv(tun_fd, buf + 4, len - 4, 0);
+#else
+	/* The other need read() because fd is not a socket */
 	bytes = read(tun_fd, buf + 4, len - 4);
+#endif /*WINDOWS32*/
 	if (bytes < 0) {
 		return bytes;
 	} else {
@@ -373,7 +426,7 @@ read_tun(int tun_fd, char *buf, size_t len)
 }
 
 int
-tun_setip(const char *ip, int netbits)
+tun_setip(const char *ip, const char *remoteip, int netbits)
 {
 	char cmdline[512];
 	int netmask;
@@ -405,7 +458,11 @@ tun_setip(const char *ip, int netbits)
 			"/sbin/ifconfig %s %s %s netmask %s",
 			if_name,
 			ip,
+#ifdef FREEBSD
+			remoteip, /* FreeBSD wants other IP as second IP */
+#else
 			ip,
+#endif
 			inet_ntoa(net));
 	
 	fprintf(stderr, "Setting IP of %s to %s\n", if_name, ip);

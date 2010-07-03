@@ -21,16 +21,11 @@
 #include <string.h>
 #include <signal.h>
 #include <unistd.h>
-#include <sys/types.h>
 #include <fcntl.h>
 
 #ifdef WINDOWS32
 #include <winsock2.h>
 #else
-#include <err.h>
-#include <arpa/inet.h>
-#include <netinet/in.h>
-#include <sys/socket.h>
 #include <netdb.h>
 #endif
 
@@ -83,16 +78,19 @@ init_users(in_addr_t my_ip, int netbits)
 			users[i].disabled = 0;
 			created_users++;
 		}
-		users[i].inpacket.len = 0;
-		users[i].inpacket.offset = 0;
-		users[i].outpacket.len = 0;
-		users[i].q.id = 0;
-		users[i].out_acked_seqno = 0;
-		users[i].out_acked_fragment = 0;
-		users[i].fragsize = 4096;
+		users[i].active = 0;
+ 		/* Rest is reset on login ('V' packet) */
 	}
 
 	return created_users;
+}
+
+const char*
+users_get_first_ip()
+{
+	struct in_addr ip;
+	ip.s_addr = users[0].tun_ip;
+	return inet_ntoa(ip);
 }
 
 int
@@ -105,7 +103,7 @@ users_waiting_on_reply()
 	for (i = 0; i < USERS; i++) {
 		if (users[i].active && !users[i].disabled && 
 			users[i].last_pkt + 60 > time(NULL) &&
-			users[i].q.id != 0) {
+			users[i].q.id != 0 && users[i].conn == CONN_DNS_NULL) {
 			ret++;
 		}
 	}
@@ -133,6 +131,11 @@ find_user_by_ip(uint32_t ip)
 
 int
 all_users_waiting_to_send()
+/* If this returns true, then reading from tun device is blocked.
+   So only return true when all clients have at least one packet in
+   the outpacket-queue, so that sending back-to-back is possible
+   without going through another select loop.
+*/
 {
 	time_t now;
 	int ret;
@@ -143,7 +146,15 @@ all_users_waiting_to_send()
 	for (i = 0; i < USERS; i++) {
 		if (users[i].active && !users[i].disabled &&
 			users[i].last_pkt + 60 > now &&
-			users[i].outpacket.len == 0) {
+			((users[i].conn == CONN_RAW_UDP) || 
+			((users[i].conn == CONN_DNS_NULL) 
+#ifdef OUTPACKETQ_LEN
+				&& users[i].outpacketq_filled < 1
+#else
+				&& users[i].outpacket.len == 0
+#endif
+			))) {
+
 			ret = 0;
 			break;
 		}
@@ -161,6 +172,8 @@ find_available_user()
 		if ((!users[i].active || users[i].last_pkt + 60 < time(NULL)) && !users[i].disabled) {
 			users[i].active = 1;
 			users[i].last_pkt = time(NULL);
+			users[i].fragsize = 4096;
+			users[i].conn = CONN_DNS_NULL;
 			ret = i;
 			break;
 		}
@@ -176,3 +189,16 @@ user_switch_codec(int userid, struct encoder *enc)
 	
 	users[userid].encoder = enc;
 }
+
+void
+user_set_conn_type(int userid, enum connection c)
+{
+	if (userid < 0 || userid >= USERS)
+		return;
+
+	if (c < 0 || c >= CONN_MAX)
+		return;
+	
+	users[userid].conn = c;
+}
+	
