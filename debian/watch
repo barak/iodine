@@ -1,4 +1,5 @@
 # Compulsory line, this is a version 3 file
 version=3
 
-http://code.kryo.se/iodine/iodine-([\d\.]+)\.tar\.gz
+opts=uversionmangle=s/-rc/~rc/ \
+	http://code.kryo.se/iodine/iodine-([\d\w\.-]+)\.tar\.gz
