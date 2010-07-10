@@ -1,6 +1,7 @@
-iodine (0.6.0~rc1-1) UNRELEASED; urgency=low
+iodine (0.6.0~rc1-1) unstable; urgency=low
 
   * debian/watch: relax regexp to also catch release candidates.
+
   * New upstream release:
     - return nonzero if tunnel fails to open (closes: #534186)
     - added support for CNAME/TXT/A/MX query types (closes: #587894)
@@ -14,7 +15,7 @@ iodine (0.6.0~rc1-1) UNRELEASED; urgency=low
   * debian/copyright: point to /usr/share/common-licenses/GPL-1 now that the
     GNU GPLv1 is included in base-files.
 
- -- gregor herrmann <gregoa@debian.org>  Sat, 03 Jul 2010 18:11:37 +0200
+ -- gregor herrmann <gregoa@debian.org>  Sat, 10 Jul 2010 18:04:23 +0200
 
 iodine (0.5.2-7) unstable; urgency=low
 
