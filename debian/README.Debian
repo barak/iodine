@@ -1,7 +1,7 @@
 iodine for Debian
 -----------------
 
-* Warning: both the client and the server needs to use the same protocol
+* Warning: both the client and the server need to use the same protocol
   version; in practice that means that the 0.4.x, 0.5.x, and 0.6.x packages
   are not compatible!
 
