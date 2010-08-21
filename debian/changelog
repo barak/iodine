@@ -1,3 +1,11 @@
+iodine (0.6.0~rc1-2) UNRELEASED; urgency=low
+
+  * Build with hardening; thanks to Romain Francoise for the bug report and
+    the patch.
+  * Set Standards-Version to 3.9.1 (no changes).
+
+ -- gregor herrmann <gregoa@debian.org>  Sun, 22 Aug 2010 00:17:11 +0200
+
 iodine (0.6.0~rc1-1) unstable; urgency=low
 
   * debian/watch: relax regexp to also catch release candidates.
