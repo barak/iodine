@@ -1,7 +1,7 @@
 iodine (0.6.0~rc1-3) UNRELEASED; urgency=low
 
   * Build with hardening; thanks to Romain Francoise for the bug report and
-    the patch.
+    the patch (closes: #589054).
   * Set Standards-Version to 3.9.1 (no changes).
 
  -- gregor herrmann <gregoa@debian.org>  Sun, 22 Aug 2010 00:17:11 +0200
