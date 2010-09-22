@@ -1,5 +1,6 @@
 iodine (0.6.0~rc1-3) UNRELEASED; urgency=low
 
+  [ gregor herrmann ]
   * Build with hardening; thanks to Romain Francoise for the bug report and
     the patch (closes: #589054).
   * New patch uninitialized-inside_topdomain.patch: initialize
@@ -7,7 +8,10 @@ iodine (0.6.0~rc1-3) UNRELEASED; urgency=low
     report and the patch (closes: #596740).
   * Set Standards-Version to 3.9.1 (no changes).
 
- -- gregor herrmann <gregoa@debian.org>  Sun, 22 Aug 2010 00:17:11 +0200
+  [ tony mancill ]
+  * Update reference to README file in README.Debian (closes: #597736)
+
+ -- tony mancill <tmancill@debian.org>  Wed, 22 Sep 2010 10:46:13 -0700
 
 iodine (0.6.0~rc1-2) unstable; urgency=low
 
