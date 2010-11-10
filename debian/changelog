@@ -7,6 +7,7 @@ iodine (0.6.0~rc1-3) UNRELEASED; urgency=low
     inside_topdomain before using it; thanks to Samuel Thibault for the bug
     report and the patch (closes: #596740).
   * Set Standards-Version to 3.9.1 (no changes).
+  * Add Danish debconf translation, thanks to Joe Dalton (closes: #602447).
 
   [ tony mancill ]
   * Update reference to README file in README.Debian (closes: #597736)
