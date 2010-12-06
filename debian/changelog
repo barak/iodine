@@ -8,6 +8,8 @@ iodine (0.6.0~rc1-3) UNRELEASED; urgency=low
     report and the patch (closes: #596740).
   * Set Standards-Version to 3.9.1 (no changes).
   * Add Danish debconf translation, thanks to Joe Dalton (closes: #602447).
+  * Update iodine-client-start to version 1.0.3, commit 04c2dee
+    (closes: #605703).
 
   [ tony mancill ]
   * Update reference to README file in README.Debian (closes: #597736)
