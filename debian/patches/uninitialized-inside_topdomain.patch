@@ -1,7 +1,8 @@
 Description: fix an uninitialized variable: 
  when domain_len < 0 for instance, inside_topdomain is not initialized, but used.
 Origin: vendor
-Bug: http://bugs.debian.org/596740
+Bug: http://dev.kryo.se/iodine/ticket/98
+Bug-Debian: http://bugs.debian.org/596740
 Forwarded: yes
 Author: Samuel Thibault <sthibault@debian.org>
 Reviewed-by: gregor herrmann <gregoa@debian.org>
