@@ -10,6 +10,7 @@ iodine (0.6.0~rc1-3) UNRELEASED; urgency=low
   * Add Danish debconf translation, thanks to Joe Dalton (closes: #602447).
   * Update iodine-client-start to version 1.0.3, commit 04c2dee
     (closes: #605703).
+  * debian/copyright: update years of packaging copyright, update formatting.
 
   [ tony mancill ]
   * Update reference to README file in README.Debian (closes: #597736)
