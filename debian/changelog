@@ -4,6 +4,8 @@ iodine (0.6.0~rc1-5) UNRELEASED; urgency=low
     with awk. This allows to use shell constructs like $() in the file and
     preserve them during re-configuration (closes: #612723).
     Thanks to "Debian bug at v.nix.is" for the bug report.
+  * Add a logcheck filter; thanks to martin f krafft for the bug report and
+    the logcheck file (closes: #612721).
 
  -- gregor herrmann <gregoa@debian.org>  Thu, 10 Feb 2011 15:33:18 +0100
 
