@@ -2,6 +2,8 @@ Description: Rename struct user to struct _user in the code to avoid naming
  conflict caused by including <sys/user.h> as part of the armel build. Fixes
  FTBFS.
 Origin: Ubuntu
+Bug: http://dev.kryo.se/iodine/ticket/102
+Forwarded: yes
 Reviewed-by: gregor herrmann <gregoa@debian.org>
 Last-Update: 2011-02-10
 
