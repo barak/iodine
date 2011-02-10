@@ -2,3 +2,4 @@
 spelling.patch
 manpage.patch
 uninitialized-inside_topdomain.patch
+armel_ftbfs.patch

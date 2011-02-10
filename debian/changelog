@@ -6,6 +6,10 @@ iodine (0.6.0~rc1-5) UNRELEASED; urgency=low
     Thanks to "Debian bug at v.nix.is" for the bug report.
   * Add a logcheck filter; thanks to martin f krafft for the bug report and
     the logcheck file (closes: #612721).
+  * Add patch armel_ftbfs.patch: Rename struct user to struct _user in the
+    code to avoid naming conflict caused by including <sys/user.h> as part of
+    the armel build. Taken from Ubuntu; not needed currently in Debian but
+    saves Ubuntu from carrying the patch and might be helpful later.
 
  -- gregor herrmann <gregoa@debian.org>  Thu, 10 Feb 2011 15:33:18 +0100
 
