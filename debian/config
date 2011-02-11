@@ -5,7 +5,7 @@ set -e
 . /usr/share/debconf/confmodule
 
 getvalue() {
-	awk '/^'"$1"'=/ {gsub("\"", ""); sub("'"$1"'=", ""); value=$0;} END {print value}' /etc/default/iodine
+	awk '/^'"$1"'=/ {sub("^'"$1"'=\"", ""); sub("\"$", ""); value=$0;} END {print value}' /etc/default/iodine
 }
 
 if [ -s /etc/default/iodine ] ; then
