@@ -1,4 +1,4 @@
-iodine (0.6.0~rc1-5) UNRELEASED; urgency=low
+iodine (0.6.0~rc1-5) unstable; urgency=low
 
   * Don't source /etc/default/iodine in config script but read out the values
     with awk. This allows to use shell constructs like $() in the file and
@@ -11,7 +11,7 @@ iodine (0.6.0~rc1-5) UNRELEASED; urgency=low
     the armel build. Taken from Ubuntu; not needed currently in Debian but
     saves Ubuntu from carrying the patch and might be helpful later.
 
- -- gregor herrmann <gregoa@debian.org>  Thu, 10 Feb 2011 15:33:18 +0100
+ -- gregor herrmann <gregoa@debian.org>  Sat, 12 Feb 2011 14:49:06 +0100
 
 iodine (0.6.0~rc1-4) unstable; urgency=low
 
