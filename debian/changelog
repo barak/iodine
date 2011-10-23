@@ -6,6 +6,7 @@ iodine (0.6.0~rc1-6) UNRELEASED; urgency=low
     LP: #880508
   * debian/{rules,control}: replace hardening-includes with the new
     dpkg-dev/debhelper approach. Update cflags.patch to honour CPPFLAGS.
+  * Set Standards-Version to 3.9.2 (no changes).
 
  -- gregor herrmann <gregoa@debian.org>  Sun, 23 Oct 2011 22:23:31 +0200
 

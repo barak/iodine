@@ -9,7 +9,7 @@ Build-Depends: check,
  help2man,
  po-debconf,
  zlib1g-dev,
-Standards-Version: 3.9.1
+Standards-Version: 3.9.2
 Homepage: http://code.kryo.se/iodine
 Vcs-Svn: http://svn.toastfreeware.priv.at/debian/iodine/trunk/
 Vcs-Browser: http://svn.toastfreeware.priv.at/wsvn/ToastfreewareDebian/iodine/trunk/
