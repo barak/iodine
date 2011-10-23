@@ -4,6 +4,8 @@ iodine (0.6.0~rc1-6) UNRELEASED; urgency=low
     have no effect (client). Thanks to Pavel Pergamenshchik for the bug report
     and the patch.
     LP: #880508
+  * debian/{rules,control}: replace hardening-includes with the new
+    dpkg-dev/debhelper approach. Update cflags.patch to honour CPPFLAGS.
 
  -- gregor herrmann <gregoa@debian.org>  Sun, 23 Oct 2011 22:23:31 +0200
 
