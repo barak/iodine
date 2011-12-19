@@ -1,10 +1,10 @@
-iodine (0.6.0~rc1-7) UNRELEASED; urgency=low
+iodine (0.6.0~rc1-7) unstable; urgency=low
 
   [ Peter Eisentraut ]
   * Add support for "status" action to init.d script
     Closes: #652671
 
- -- gregor herrmann <gregoa@debian.org>  Mon, 19 Dec 2011 19:51:04 +0100
+ -- gregor herrmann <gregoa@debian.org>  Mon, 19 Dec 2011 19:56:22 +0100
 
 iodine (0.6.0~rc1-6) unstable; urgency=low
 
