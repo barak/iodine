@@ -1,3 +1,11 @@
+iodine (0.6.0~rc1-7) UNRELEASED; urgency=low
+
+  [ Peter Eisentraut ]
+  * Add support for "status" action to init.d script
+    Closes: #652671
+
+ -- gregor herrmann <gregoa@debian.org>  Mon, 19 Dec 2011 19:51:04 +0100
+
 iodine (0.6.0~rc1-6) unstable; urgency=low
 
   * New patch: cmdline-r-u.patch. Due to a missing "break", -r causes -u to
