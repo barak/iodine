@@ -11,8 +11,8 @@ Build-Depends: check,
  zlib1g-dev,
 Standards-Version: 3.9.2
 Homepage: http://code.kryo.se/iodine
-Vcs-Svn: http://svn.toastfreeware.priv.at/debian/iodine/trunk/
-Vcs-Browser: http://svn.toastfreeware.priv.at/wsvn/ToastfreewareDebian/iodine/trunk/
+Vcs-Git: git://git.toastfreeware.priv.at/debian/iodine.git
+Vcs-Browser: http://git.toastfreeware.priv.at/debian/iodine.git/
 
 Package: iodine
 Architecture: any

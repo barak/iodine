@@ -1,3 +1,9 @@
+iodine (0.6.0~rc1-8) UNRELEASED; urgency=low
+
+  * Update Vcs-* headers.
+
+ -- gregor herrmann <gregoa@debian.org>  Sun, 08 Jan 2012 20:55:42 +0100
+
 iodine (0.6.0~rc1-7) unstable; urgency=low
 
   [ Peter Eisentraut ]
