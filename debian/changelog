@@ -1,8 +1,14 @@
-iodine (0.6.0~rc1-8) UNRELEASED; urgency=low
+iodine (0.6.0~rc1-8) unstable; urgency=low
 
   * Update Vcs-* headers.
+  * Add Italian debconf translation. Thanks to Beatrice Torracca.
+    (Closes: #666426)
+  * Build-depend on debhelper >= 9.
+  * debian/copyright: update to Copyright-Format 1.0.
+  * Update years of packaging copyright.
+  * Bump Standards-Version to 3.9.3 (no changes).
 
- -- gregor herrmann <gregoa@debian.org>  Sun, 08 Jan 2012 20:55:42 +0100
+ -- gregor herrmann <gregoa@debian.org>  Fri, 30 Mar 2012 20:41:23 +0200
 
 iodine (0.6.0~rc1-7) unstable; urgency=low
 
