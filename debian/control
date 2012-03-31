@@ -18,7 +18,7 @@ Package: iodine
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends},
  adduser,
- udev | makedev
+ udev [linux-any] | makedev [linux-any]
 Suggests: dnsutils,
  fping,
  gawk,
