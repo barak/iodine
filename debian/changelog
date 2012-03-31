@@ -1,3 +1,10 @@
+iodine (0.6.0~rc1-9) unstable; urgency=low
+
+  * Make udev|makedev dependency Linux-only. Thanks to Robert Millan for
+    the bugreport and the patch. (Closes: #666509)
+
+ -- gregor herrmann <gregoa@debian.org>  Sat, 31 Mar 2012 21:40:44 +0200
+
 iodine (0.6.0~rc1-8) unstable; urgency=low
 
   * Update Vcs-* headers.
