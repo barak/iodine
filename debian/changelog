@@ -1,11 +1,16 @@
-iodine (0.6.0~rc1-10) UNRELEASED; urgency=low
+iodine (0.6.0~rc1-10) unstable; urgency=low
 
   [ Luca Capello ]
   * debian/iodine.iodined.init:
     + add $named to LSB's Required-Start, DNS resolution is needed for
       the topdomain argument.
 
- --
+  [ gregor herrmann ]
+  * Add patch 0001-man-iodine.8-add-note-about-sharing-port-dnsport.patch:
+    adds a note to the manpage about sharing port/dnsport. Thanks to Luca
+    Capello for the great analysis and the patch. (Closes: #668621)
+
+ -- gregor herrmann <gregoa@debian.org>  Sat, 14 Apr 2012 22:06:06 +0200
 
 iodine (0.6.0~rc1-9) unstable; urgency=low
 
