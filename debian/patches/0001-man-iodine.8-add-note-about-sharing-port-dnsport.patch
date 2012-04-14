@@ -1,0 +1,37 @@
+From 3f246470c7abc13553cffe544c88a4b78afde5b2 Mon Sep 17 00:00:00 2001
+From: Luca Capello <luca@pca.it>
+Date: Fri, 13 Apr 2012 16:45:43 +0200
+Subject: [PATCH] man/iodine.8: add note about sharing port/dnsport
+
+This complements a62ae8e562d0e9e5729bb4f469bc900074930efc.
+---
+ man/iodine.8 |    6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+--- a/man/iodine.8
++++ b/man/iodine.8
+@@ -1,5 +1,5 @@
+ .\" groff -man -Tascii iodine.8
+-.TH IODINE 8 "DEC 2009" "User Manuals"
++.TH IODINE 8 "APR 2012" "User Manuals"
+ .SH NAME
+ iodine, iodined \- tunnel IPv4 over DNS
+ .SH SYNOPSIS
+@@ -250,6 +250,8 @@
+ .TP
+ .B -p port
+ Make the server listen on 'port' instead of 53 for traffic. 
++If 'listen_ip' does not include localhost, this 'port' can be the same
++as 'dnsport'.
+ .B Note:
+ You must make sure the dns requests are forwarded to this port yourself.
+ .TP
+@@ -260,6 +262,8 @@
+ .B -b dnsport
+ If this port is specified, all incoming requests not inside the tunnel domain
+ will be forwarded to this port on localhost, to be handled by a real dns.
++If 'listen_ip' does not include localhost, this 'dnsport' can be the
++same as 'port'.
+ .B Note:
+ The forwarding is not fully transparent, and not advised for use
+ in production environments.
