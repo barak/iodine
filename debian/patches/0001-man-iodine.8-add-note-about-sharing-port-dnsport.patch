@@ -1,3 +1,9 @@
+Bug: http://dev.kryo.se/iodine/ticket/112
+Bug-Debian: http://bugs.debian.org/668621
+Forwarded: http://dev.kryo.se/iodine/ticket/112
+Reviewed-by: gregor herrmann <gregoa@debian.org>
+Last-Update: 2012-04-15
+
 From 3f246470c7abc13553cffe544c88a4b78afde5b2 Mon Sep 17 00:00:00 2001
 From: Luca Capello <luca@pca.it>
 Date: Fri, 13 Apr 2012 16:45:43 +0200
