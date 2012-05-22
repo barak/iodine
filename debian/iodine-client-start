@@ -102,6 +102,11 @@ mtu
     the default tunnel MTU is 1024, and if the local DNS server
     restricts to 512 byte packets you might need to use an MTU of 220.
 
+skip_raw_udp_mode
+    Set "-r" option in iodine command line. With this option, iodine
+    does not try to establish a direct UDP socket to the iodine server
+    on port 53. (default: true).
+
 continue_on_error
     Set if the script should continue even if a command fails.
     Use to test script when running as non-root. Defaults to false
@@ -111,7 +116,7 @@ EOF
 
 function version
 {
-    echo iodine-client-start 1.0.3
+    echo iodine-client-start 1.0.4
 }
 
 case $# in
@@ -189,6 +194,9 @@ echo "${interface}"				> /dev/null
 ##  - if local DNS server restricts to 512 byte packets then use MTU 220
 echo "${mtu}"					> /dev/null
 
+## Set it if you want try RAW udp mode
+echo "${skip_raw_udp_mode:=true}"           > /dev/null
+
 ## Set if the script should continue even if a command fails.
 ## Used to test script when running as non-root.
 if [ $(whoami) = root ]; then
@@ -217,8 +225,13 @@ echo ==== Creating IP-over-DNS tunnel over local network connection...
 ## Find a network interface
 
 if [ -z ${interface} ]; then
-    interface=$(tail --lines=+3 /proc/net/wireless \
-	| head -1 | tr -d : | awk '{print $1}')
+    interfaces=$(tail --lines=+3 /proc/net/wireless \
+	| tr -d : | awk '{print $1}')
+    for dev in ${interfaces}; do
+        if ip -4 addr show dev ${dev} | grep -q inet; then
+            interface=${dev}
+        fi
+    done
 fi
 
 if [ -z ${interface} ]; then
@@ -304,18 +317,25 @@ fi
 
 for n in ${nameservers}; do
     n_net=$(ipcalc --nobinary ${n}/${prefix_len} | awk '$1=="Network:" {print $2}')
+    n_net8=$(ipcalc --nobinary ${n}/8 | awk '$1=="Network:" {print $2}')
     if [ "${n_net}" != "${local_net}" ]; then
-	echo ==== Adding point-to-point route for DNS server ${n}
-        ## remove point-to-point route first, in case it is already present
-	ip -4 route del ${n}/32 || true
-	ip -4 route add ${n}/32 via ${router} || ${continue_on_error}
+        if [ "${n_net8}" != "127.0.0.0/8" ]; then
+	    echo ==== Adding point-to-point route for DNS server ${n}
+            ## remove point-to-point route first, in case it is already present
+	    ip -4 route del ${n}/32 || true
+	    ip -4 route add ${n}/32 via ${router} || ${continue_on_error}
+        fi
     fi
 done
 
 ## Bring up DNS tunnel
 
 echo ==== Creating IP-over-DNS tunnel...
-iodine -P "${passwd}" "${subdomain}" || ${continue_on_error}
+if ${skip_raw_udp_mode}; then
+    iodine_opts="${iodine_opts} -r"
+fi
+
+iodine ${iodine_opts} -P "${passwd}" "${subdomain}" || ${continue_on_error}
 
 ## Find DNS tunnel interface
 
