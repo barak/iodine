@@ -1,3 +1,16 @@
+iodine (0.6.0~rc1-11) UNRELEASED; urgency=low
+
+  * New version of iodine-client-start (1.0.4), pulled from upstream git
+    (db977d3): fixes
+    - "iodine-client-start make a point-to-point route for 127.0.0.1"
+      (Closes: #673439)
+    - "iodine-client-start launch iodine with UDP raw mode socket"
+      (Closes: #673440)
+    - "interface detection partially broken"
+      (Closes: #606119)
+
+ -- gregor herrmann <gregoa@debian.org>  Tue, 22 May 2012 19:45:32 +0200
+
 iodine (0.6.0~rc1-10) unstable; urgency=low
 
   [ Luca Capello ]
