@@ -1,4 +1,4 @@
-iodine (0.6.0~rc1-11) UNRELEASED; urgency=low
+iodine (0.6.0~rc1-11) unstable; urgency=low
 
   * New version of iodine-client-start (1.0.4), pulled from upstream git
     (db977d3): fixes
@@ -9,7 +9,7 @@ iodine (0.6.0~rc1-11) UNRELEASED; urgency=low
     - "interface detection partially broken"
       (Closes: #606119)
 
- -- gregor herrmann <gregoa@debian.org>  Tue, 22 May 2012 19:45:32 +0200
+ -- gregor herrmann <gregoa@debian.org>  Tue, 22 May 2012 19:47:47 +0200
 
 iodine (0.6.0~rc1-10) unstable; urgency=low
 
