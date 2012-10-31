@@ -1,3 +1,10 @@
+iodine (0.6.0~rc1-12) unstable; urgency=low
+
+  [ David Prévot ]
+  * debian/po/de.po: Fix charset (Closes: #691959)
+
+ -- gregor herrmann <gregoa@debian.org>  Wed, 31 Oct 2012 20:38:01 +0100
+
 iodine (0.6.0~rc1-11) unstable; urgency=low
 
   * New version of iodine-client-start (1.0.4), pulled from upstream git
