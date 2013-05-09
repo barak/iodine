@@ -5,3 +5,4 @@ uninitialized-inside_topdomain.patch
 armel_ftbfs.patch
 cmdline-r-u.patch
 0001-man-iodine.8-add-note-about-sharing-port-dnsport.patch
+verbose-build.patch

@@ -1,0 +1,45 @@
+Description: make build verbose
+Origin: vendor
+Forwarded: no
+Author: gregor herrmann <gregoa@debian.org>
+Last-Update: 2013-05-09
+
+--- a/src/Makefile
++++ b/src/Makefile
+@@ -19,16 +19,16 @@
+ $(CLIENT): $(COMMONOBJS) $(CLIENTOBJS)
+ 	@echo LD $@
+ 	@mkdir -p ../bin
+-	@$(CC) $(COMMONOBJS) $(CLIENTOBJS) -o $(CLIENT) $(LDFLAGS)
++	$(CC) $(COMMONOBJS) $(CLIENTOBJS) -o $(CLIENT) $(LDFLAGS)
+ 
+ $(SERVER): $(COMMONOBJS) $(SERVEROBJS)
+ 	@echo LD $@
+ 	@mkdir -p ../bin
+-	@$(CC) $(COMMONOBJS) $(SERVEROBJS) -o $(SERVER) $(LDFLAGS)
++	$(CC) $(COMMONOBJS) $(SERVEROBJS) -o $(SERVER) $(LDFLAGS)
+ 
+ .c.o: 
+-	@echo CC $<
+-	@$(CC) $(CFLAGS) $< -o $@
++	echo CC $<
++	$(CC) $(CFLAGS) $< -o $@
+ 
+ base64u.o client.o iodined.o: base64u.h
+ base64u.c: base64.c
+--- a/tests/Makefile
++++ b/tests/Makefile
+@@ -14,11 +14,11 @@
+ 
+ $(TEST): $(OBJS) $(SRCOBJS)
+ 	@echo LD $(TEST)
+-	@$(CC) -o $@ $(SRCOBJS) $(OBJS) $(LDFLAGS) 
++	$(CC) -o $@ $(SRCOBJS) $(OBJS) $(LDFLAGS)
+ 
+ .c.o: 
+ 	@echo CC $<
+-	@$(CC) $(CFLAGS) -c $<
++	$(CC) $(CFLAGS) -c $<
+ 
+ 
+ clean:
