@@ -1,11 +1,15 @@
-iodine (0.6.0~rc1-13) UNRELEASED; urgency=low
+iodine (0.6.0~rc1-13) unstable; urgency=low
 
   * New version of iodine-client-start (1.0.5), pulled from upstream git
     (d50ae59): Use either fping or oping or no ping.
+  * Add oping as an alternative to fping in Suggests.
   * Rewrite handling of /etc/default/iodine according to debconf-devel(7)
     in debian/config and debian/postinst.
+  * Set Standards-Version to 3.9.4 (no changes).
+  * Update years of packaging copyright.
+  * New patch verbose-build.patch: unhide compiler flags.
 
- -- gregor herrmann <gregoa@debian.org>  Thu, 09 May 2013 14:55:27 +0200
+ -- gregor herrmann <gregoa@debian.org>  Thu, 09 May 2013 15:35:58 +0200
 
 iodine (0.6.0~rc1-12) unstable; urgency=low
 
