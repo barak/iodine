@@ -3,8 +3,8 @@
 #
 # see: dh_installdeb(1)
 
+CONFIGFILE=/etc/default/iodine
 set -e
-
 . /usr/share/debconf/confmodule
 
 # summary of how this script can be called:
@@ -28,23 +28,46 @@ case "$1" in
             cd /dev
             ./MAKEDEV tun || true
         fi 
+
         # and we want a special user
         adduser --quiet --system --home /var/run/iodine iodine
-        # generate /etc/default/iodine
+
+        # generate/update /etc/default/iodine
+        if [ ! -e $CONFIGFILE ]; then
+            cat <<EOF >$CONFIGFILE
+# Default settings for iodine. This file is sourced from
+# /etc/init.d/iodined
+START_IODINED=
+IODINED_ARGS=
+IODINED_PASSWORD=
+EOF
+        fi
+
         db_get iodine/start_daemon
         START_IODINED=$RET
         db_get iodine/daemon_options
         IODINED_ARGS=$RET
         db_get iodine/daemon_password
         IODINED_PASSWORD=$RET
-        cat <<EOF > /etc/default/iodine
-# Default settings for iodine. This file is sourced from
-# /etc/init.d/iodined
-START_IODINED="$START_IODINED"
-IODINED_ARGS="$IODINED_ARGS"
-IODINED_PASSWORD="$IODINED_PASSWORD"
-EOF
-        [ -e /etc/default/iodine ] && chmod 600 /etc/default/iodine
+
+        cp -a -f $CONFIGFILE $CONFIGFILE.tmp
+
+        # If the admin deleted or commented some variables but then set
+        # them via debconf, (re-)add them to the conffile.
+        test -z "$START_IODINED" || grep -Eq '^ *START_IODINED=' $CONFIGFILE || \
+            echo "START_IODINED=" >> $CONFIGFILE
+        test -z "$IODINED_ARGS" || grep -Eq '^ *IODINED_ARGS=' $CONFIGFILE || \
+            echo "IODINED_ARGS=" >> $CONFIGFILE
+        test -z "$IODINED_PASSWORD" || grep -Eq '^ *IODINED_PASSWORD=' $CONFIGFILE || \
+            echo "IODINED_PASSWORD=" >> $CONFIGFILE
+
+        sed -e "s/^ *START_IODINED=.*/START_IODINED=\"$START_IODINED\"/" \
+            -e "s/^ *IODINED_ARGS=.*/IODINED_ARGS=\"$IODINED_ARGS\"/" \
+            -e "s/^ *IODINED_PASSWORD=.*/IODINED_PASSWORD=\"$IODINED_PASSWORD\"/" \
+            < $CONFIGFILE > $CONFIGFILE.tmp
+
+        mv -f $CONFIGFILE.tmp $CONFIGFILE
+        [ ! -e $CONFIGFILE ] || chmod 600 $CONFIGFILE
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)
