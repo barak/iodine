@@ -1,3 +1,12 @@
+iodine (0.6.0~rc1-13) UNRELEASED; urgency=low
+
+  * New version of iodine-client-start (1.0.5), pulled from upstream git
+    (d50ae59): Use either fping or oping or no ping.
+  * Rewrite handling of /etc/default/iodine according to debconf-devel(7)
+    in debian/config and debian/postinst.
+
+ -- gregor herrmann <gregoa@debian.org>  Thu, 09 May 2013 14:55:27 +0200
+
 iodine (0.6.0~rc1-12) unstable; urgency=low
 
   [ David Prévot ]
