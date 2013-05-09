@@ -37,8 +37,8 @@ Copyright: 2006-2009, Bjorn Andersson <flex@kryo.se>
 License: MIT
 
 Files: debian/*
-Copyright: 2007-2012, gregor herrmann <gregoa@debian.org>
- 2007-2012, tony mancill <tmancill@debian.org>
+Copyright: 2007-2013, gregor herrmann <gregoa@debian.org>
+ 2007-2013, tony mancill <tmancill@debian.org>
 License: GPL-1+
 
 Files: debian/iodine-client-start
