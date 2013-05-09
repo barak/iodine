@@ -20,7 +20,7 @@ Depends: ${shlibs:Depends}, ${misc:Depends},
  adduser,
  udev [linux-any] | makedev [linux-any]
 Suggests: dnsutils,
- fping,
+ fping | oping,
  gawk,
  ipcalc,
  iproute
