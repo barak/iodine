@@ -61,9 +61,9 @@ EOF
         test -z "$IODINED_PASSWORD" || grep -Eq '^ *IODINED_PASSWORD=' $CONFIGFILE || \
             echo "IODINED_PASSWORD=" >> $CONFIGFILE
 
-        sed -e "s/^ *START_IODINED=.*/START_IODINED=\"$START_IODINED\"/" \
-            -e "s/^ *IODINED_ARGS=.*/IODINED_ARGS=\"$IODINED_ARGS\"/" \
-            -e "s/^ *IODINED_PASSWORD=.*/IODINED_PASSWORD=\"$IODINED_PASSWORD\"/" \
+        perl -p -e "s{^ *START_IODINED=.*}{START_IODINED=\"$START_IODINED\"}; \
+                    s{^ *IODINED_ARGS=.*}{IODINED_ARGS=\"$IODINED_ARGS\"}; \
+                    s{^ *IODINED_PASSWORD=.*}{IODINED_PASSWORD=\"$IODINED_PASSWORD\"};" \
             < $CONFIGFILE > $CONFIGFILE.tmp
 
         mv -f $CONFIGFILE.tmp $CONFIGFILE
