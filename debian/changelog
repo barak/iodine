@@ -1,3 +1,11 @@
+iodine (0.6.0~rc1-15) unstable; urgency=low
+
+  * Temporarily turn off tests. We can add the missing -lm and -lrt but
+    then we still run into check's pthread problems (cf. #712140).
+    (Closes: #713556)
+
+ -- gregor herrmann <gregoa@debian.org>  Sat, 22 Jun 2013 23:29:48 +0200
+
 iodine (0.6.0~rc1-14) unstable; urgency=low
 
   * debian/postinst: use perl and fancy regex delimiters instead of sed
