@@ -19,6 +19,10 @@ override_dh_auto_build:
 		--no-info --section=8 --name="start an iodine IPv4-over-DNS tunnel" \
 		$(CURDIR)/debian/iodine-client-start
 
+override_dh_auto_test:
+	# turned off because the check library has problems,
+	# cf. #712140
+
 override_dh_auto_install:
 	dh_auto_install -- DESTDIR=$(TMP) prefix=/usr
 
