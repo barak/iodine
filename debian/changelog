@@ -1,3 +1,10 @@
+iodine (0.6.0~rc1-16) unstable; urgency=low
+
+  * Re-enable tests after check seems to be fixed (cf. #712140).
+  * Add patch to add linker flags to test; build-depend on pkg-config.
+
+ -- gregor herrmann <gregoa@debian.org>  Wed, 26 Jun 2013 21:16:56 +0200
+
 iodine (0.6.0~rc1-15) unstable; urgency=low
 
   * Temporarily turn off tests. We can add the missing -lm and -lrt but
