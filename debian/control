@@ -7,6 +7,7 @@ Build-Depends: check,
                debhelper (>= 9),
                dpkg-dev (>= 1.16.1),
                help2man,
+               pkg-config,
                po-debconf,
                zlib1g-dev
 Standards-Version: 3.9.4
