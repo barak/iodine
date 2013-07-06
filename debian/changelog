@@ -1,3 +1,10 @@
+iodine (0.6.0~rc1-17) unstable; urgency=low
+
+  * Build-depend on check >= 0.9.10-3 which fixes #712140.
+    (Closes: #714267)
+
+ -- gregor herrmann <gregoa@debian.org>  Sat, 06 Jul 2013 17:53:26 +0200
+
 iodine (0.6.0~rc1-16) unstable; urgency=low
 
   * Re-enable tests after check seems to be fixed (cf. #712140).
