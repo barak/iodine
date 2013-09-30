@@ -1,3 +1,10 @@
+iodine (0.6.0~rc1-18) unstable; urgency=low
+
+  * debian/control: use iproute2 in Suggests instead of the transitional
+    package iproute.
+
+ -- gregor herrmann <gregoa@debian.org>  Mon, 30 Sep 2013 14:30:03 +0200
+
 iodine (0.6.0~rc1-17) unstable; urgency=low
 
   * Build-depend on check >= 0.9.10-3 which fixes #712140.
