@@ -25,7 +25,7 @@ Suggests: dnsutils,
           fping | oping,
           gawk,
           ipcalc,
-          iproute
+          iproute2
 Description: tool for tunneling IPv4 data through a DNS server
  This is a piece of software that lets you tunnel IPv4 data through a DNS
  server. This can be usable in different situations where internet access is
