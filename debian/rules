@@ -6,7 +6,7 @@ TMP     = $(CURDIR)/debian/$(PACKAGE)
 export DEB_BUILD_MAINT_OPTIONS := hardening=+pie,+bindnow
 
 %:
-	dh $@
+	dh $@ --parallel
 
 override_dh_auto_clean:
 	debconf-updatepo
