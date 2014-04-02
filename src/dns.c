@@ -25,11 +25,15 @@
 #ifdef WINDOWS32
 #include "windows.h"
 #else
+#ifdef ANDROID
+#include "android_dns.h"
+#endif
 #include <arpa/nameser.h>
 #ifdef DARWIN
 #define BIND_8_COMPAT
 #include <arpa/nameser_compat.h>
 #endif
+#include <netinet/in.h>
 #include <arpa/inet.h>
 #include <err.h>
 #endif
@@ -41,7 +45,7 @@
 
 int dnsc_use_edns0 = 1;
 
-#define CHECKLEN(x) if (buflen - (p-buf) < (x))  return 0
+#define CHECKLEN(x) if (buflen < (x) + (unsigned)(p-buf))  return 0
 
 int
 dns_encode(char *buf, size_t buflen, struct query *q, qr_t qr, char *data, size_t datalen)
@@ -204,15 +208,13 @@ dns_encode(char *buf, size_t buflen, struct query *q, qr_t qr, char *data, size_
 		   (even CNAME/A/MX, 255+255+header would be >512) */
 		if (dnsc_use_edns0) {
 			header->arcount = htons(1);
-			/*XXX START adjust indent 1 tab forward*/
-		CHECKLEN(11);
-		putbyte(&p, 0x00);    /* Root */
-		putshort(&p, 0x0029); /* OPT */
-		putshort(&p, 0x1000); /* Payload size: 4096 */
-		putshort(&p, 0x0000); /* Higher bits/edns version */
-		putshort(&p, 0x8000); /* Z */
-		putshort(&p, 0x0000); /* Data length */
-			/*XXX END adjust indent 1 tab forward*/
+			CHECKLEN(11);
+			putbyte(&p, 0x00);    /* Root */
+			putshort(&p, 0x0029); /* OPT */
+			putshort(&p, 0x1000); /* Payload size: 4096 */
+			putshort(&p, 0x0000); /* Higher bits/edns version */
+			putshort(&p, 0x8000); /* Z */
+			putshort(&p, 0x0000); /* Data length */
 		}
 
 		break;
@@ -389,7 +391,7 @@ dns_get_id(char *packet, size_t packetlen)
 	return ntohs(header->id);
 }
 
-#define CHECKLEN(x) if (packetlen - (data-packet) < (x))  return 0
+#define CHECKLEN(x) if (packetlen < (x) + (unsigned)(data-packet))  return 0
 
 int
 dns_decode(char *buf, size_t buflen, struct query *q, qr_t qr, char *packet, size_t packetlen)

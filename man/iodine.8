@@ -1,5 +1,5 @@
 .\" groff -man -Tascii iodine.8
-.TH IODINE 8 "DEC 2009" "User Manuals"
+.TH IODINE 8 "APR 2012" "User Manuals"
 .SH NAME
 iodine, iodined \- tunnel IPv4 over DNS
 .SH SYNOPSIS
@@ -7,7 +7,7 @@ iodine, iodined \- tunnel IPv4 over DNS
 
 .B iodine [-h]
 
-.B iodine [-f] [-r] [-u
+.B iodine [-4] [-6] [-f] [-r] [-u
 .I user
 .B ] [-P
 .I password
@@ -17,6 +17,8 @@ iodine, iodined \- tunnel IPv4 over DNS
 .I chrootdir
 .B ] [-d
 .I device
+.B ] [-R
+.I rdomain
 .B ] [-m
 .I fragsize
 .B ] [-M
@@ -56,7 +58,11 @@ iodine, iodined \- tunnel IPv4 over DNS
 .B ] [-p
 .I port
 .B ] [-n
+(
+.B auto
+|
 .I external_ip
+)
 .B ] [-b
 .I dnsport
 .B ] [-P
@@ -65,6 +71,8 @@ iodine, iodined \- tunnel IPv4 over DNS
 .I context
 .B ] [-F
 .I pidfile
+.B ] [-i
+.I max_idle_time
 .B ]
 .I tunnel_ip
 .B [
@@ -124,10 +132,19 @@ Apply SELinux 'context' after initialization.
 Create 'pidfile' and write process id in it.
 .SS Client Options:
 .TP
+.B -4
+Force IPv4 DNS queries
+.TP
+.B -6
+Force IPv6 DNS queries
+.TP
 .B -r
 Skip raw UDP mode. If not used, iodine will try getting the public IP address
 of the iodined host and test if it is reachable directly. If it is, traffic
 will be sent to the server instead of the DNS relay.
+.TP
+.B -R rdomain
+Use OpenBSD routing domain 'rdomain' for the DNS connection.
 .TP
 .B -m fragsize
 Force maximum downstream fragment size. Not setting this will cause the
@@ -250,26 +267,36 @@ By default, incoming requests are accepted from all interfaces.
 .TP
 .B -p port
 Make the server listen on 'port' instead of 53 for traffic. 
+If 'listen_ip' does not include localhost, this 'port' can be the same
+as 'dnsport'.
 .B Note:
 You must make sure the dns requests are forwarded to this port yourself.
 .TP
-.B -n external_ip
+.B -n auto|external_ip
 The IP address to return in NS responses. Default is to return the address used
 as destination in the query.
+If external_ip is 'auto', iodined will use externalip.net web service to
+retrieve the external IP of the host and use that for NS responses.
 .TP
 .B -b dnsport
 If this port is specified, all incoming requests not inside the tunnel domain
 will be forwarded to this port on localhost, to be handled by a real dns.
+If 'listen_ip' does not include localhost, this 'dnsport' can be the
+same as 'port'.
 .B Note:
 The forwarding is not fully transparent, and not advised for use
 in production environments.
+.TP
+.B -i max_idle_time
+Make the server stop itself after max_idle_time seconds if no traffic have been received.
+This should be combined with systemd or upstart on demand activation for being effective.
 .SS Client Arguments:
 .TP
 .B nameserver
 The nameserver to use to relay the dns traffic. This can be any relaying
 nameserver or the server running iodined if reachable. This field can be
-given as an IP address, or as a hostname. This argument is optional, and 
-if not specified a nameserver will be read from the
+given as an IPv4/IPv6 address or as a hostname. This argument is optional,
+and if not specified a nameserver will be read from the
 .I /etc/resolv.conf
 file.
 .TP

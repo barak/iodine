@@ -19,8 +19,8 @@
 #include <string.h>
 #include <time.h>
 #include <sys/socket.h>
-#include <arpa/inet.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 
 #include "common.h"
 #include "encoding.h"
@@ -32,10 +32,11 @@ START_TEST(test_init_users)
 	in_addr_t ip;
 	char givenip[16];
 	int i;
+	int count;
 
 	ip = inet_addr("127.0.0.1");
-	init_users(ip, 27);
-	for (i = 0; i < USERS; i++) {
+	count = init_users(ip, 27);
+	for (i = 0; i < count; i++) {
 		fail_unless(users[i].id == i);
 		fail_unless(users[i].q.id == 0);
 		fail_unless(users[i].inpacket.len == 0);

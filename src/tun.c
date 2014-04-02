@@ -24,10 +24,13 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
+#ifndef IFCONFIGPATH
+#define IFCONFIGPATH "PATH=/sbin:/bin "
+#endif
+
 #ifdef WINDOWS32
-#include <winsock2.h>
-#include <winioctl.h>
 #include "windows.h"
+#include <winioctl.h>
 
 HANDLE dev_handle;
 struct tun_data data;
@@ -47,8 +50,8 @@ static void get_name(char *ifname, int namelen, char *dev_name);
 #define NET_CFG_INST_ID "NetCfgInstanceId"
 #else
 #include <err.h>
-#include <arpa/inet.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 
 #define TUN_MAX_TRY 50
 #endif
@@ -71,7 +74,11 @@ open_tun(const char *tun_device)
 	int i;
 	int tun_fd;
 	struct ifreq ifreq;
+#ifdef ANDROID
+	char *tunnel = "/dev/tun";
+#else
 	char *tunnel = "/dev/net/tun";
+#endif
 
 	if ((tun_fd = open(tunnel, O_RDWR)) < 0) {
 		warn("open_tun: %s: %s", tunnel, strerror(errno));
@@ -292,7 +299,7 @@ DWORD WINAPI tun_reader(LPVOID arg)
 			WaitForSingleObject(olpd.hEvent, INFINITE);
 			res = GetOverlappedResult(dev_handle, &olpd, (LPDWORD) &len, FALSE);
 			res = sendto(sock, buf, len, 0, (struct sockaddr*) &(tun->addr), 
-				sizeof(struct sockaddr_in));
+				tun->addrlen);
 		}
 	}
 
@@ -305,7 +312,8 @@ open_tun(const char *tun_device)
 	char adapter[256];
 	char tapfile[512];
 	int tunfd;
-	in_addr_t local;
+	struct sockaddr_storage localsock;
+	int localsock_len;
 
 	memset(adapter, 0, sizeof(adapter));
 	memset(if_name, 0, sizeof(if_name));
@@ -333,14 +341,12 @@ open_tun(const char *tun_device)
 	 * A thread does blocking reads on tun device and 
 	 * sends data as udp to this socket */
 	
-	local = htonl(0x7f000001); /* 127.0.0.1 */
-	tunfd = open_dns(55353, local);
+	localsock_len = get_addr("127.0.0.1", 55353, AF_INET, 0, &localsock);
+	tunfd = open_dns(&localsock, localsock_len);
 
 	data.tun = dev_handle;
-	memset(&(data.addr), 0, sizeof(data.addr));
-	data.addr.sin_family = AF_INET;
-	data.addr.sin_port = htons(55353);
-	data.addr.sin_addr.s_addr = local;
+	memcpy(&(data.addr), &localsock, localsock_len);
+	data.addrlen = localsock_len;
 	CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)tun_reader, &data, 0, NULL);
 	
 	return tunfd;
@@ -426,7 +432,7 @@ read_tun(int tun_fd, char *buf, size_t len)
 }
 
 int
-tun_setip(const char *ip, const char *remoteip, int netbits)
+tun_setip(const char *ip, const char *other_ip, int netbits)
 {
 	char cmdline[512];
 	int netmask;
@@ -441,6 +447,7 @@ tun_setip(const char *ip, const char *remoteip, int netbits)
 	struct in_addr addr;
 	DWORD len;
 #endif
+	const char *display_ip;
 
 	netmask = 0;
 	for (i = 0; i < netbits; i++) {
@@ -454,28 +461,33 @@ tun_setip(const char *ip, const char *remoteip, int netbits)
 		return 1;
 	}
 #ifndef WINDOWS32
+# ifdef FREEBSD
+	display_ip = other_ip; /* FreeBSD wants other IP as second IP */
+# else
+	display_ip = ip;
+# endif
 	snprintf(cmdline, sizeof(cmdline), 
-			"/sbin/ifconfig %s %s %s netmask %s",
+			IFCONFIGPATH "ifconfig %s %s %s netmask %s",
 			if_name,
 			ip,
-#ifdef FREEBSD
-			remoteip, /* FreeBSD wants other IP as second IP */
-#else
-			ip,
-#endif
+			display_ip,
 			inet_ntoa(net));
 	
 	fprintf(stderr, "Setting IP of %s to %s\n", if_name, ip);
 #ifndef LINUX
+	struct in_addr netip;
+	netip.s_addr = inet_addr(ip);
+	netip.s_addr = netip.s_addr & net.s_addr;
 	r = system(cmdline);
 	if(r != 0) {
 		return r;
 	} else {
+		
 		snprintf(cmdline, sizeof(cmdline),
 				"/sbin/route add %s/%d %s",
-				ip, netbits, ip);
+				inet_ntoa(netip), netbits, ip);
 	}
-	fprintf(stderr, "Adding route %s/%d to %s\n", ip, netbits, ip);
+	fprintf(stderr, "Adding route %s/%d to %s\n", inet_ntoa(netip), netbits, ip);
 #endif
 	return system(cmdline);
 #else /* WINDOWS32 */
@@ -522,7 +534,7 @@ tun_setmtu(const unsigned mtu)
 
 	if (mtu > 200 && mtu <= 1500) {
 		snprintf(cmdline, sizeof(cmdline), 
-				"/sbin/ifconfig %s mtu %u",
+				IFCONFIGPATH "ifconfig %s mtu %u",
 				if_name,
 				mtu);
 		

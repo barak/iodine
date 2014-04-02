@@ -37,8 +37,8 @@ extern const unsigned char raw_header[RAW_HDR_LEN];
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <err.h>
-#include <arpa/inet.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 #endif
 
 #define DNS_PORT 53
@@ -93,7 +93,7 @@ struct query {
 	unsigned short rcode;
 	unsigned short id;
 	struct in_addr destination;
-	struct sockaddr from;
+	struct sockaddr_storage from;
 	int fromlen;
 	unsigned short id2;
 	struct sockaddr from2;
@@ -107,7 +107,10 @@ enum connection {
 };
 
 void check_superuser(void (*usage_fn)(void));
-int open_dns(int, in_addr_t);
+char *format_addr(struct sockaddr_storage *sockaddr, int sockaddr_len);
+int get_addr(char *, int, int, int, struct sockaddr_storage *);
+int open_dns(struct sockaddr_storage *, size_t);
+int open_dns_from_host(char *host, int port, int addr_family, int flags);
 void close_dns(int);
 
 void do_chroot(char *);
@@ -119,8 +122,10 @@ void read_password(char*, size_t);
 
 int check_topdomain(char *);
 
-#ifdef WINDOWS32
+#if defined(WINDOWS32) || defined(ANDROID)
+#ifndef ANDROID
 int inet_aton(const char *cp, struct in_addr *inp);
+#endif
 
 void err(int eval, const char *fmt, ...);
 void warn(const char *fmt, ...);

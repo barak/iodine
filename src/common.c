@@ -39,9 +39,11 @@
 #endif
 #include <termios.h>
 #include <err.h>
-#include <arpa/inet.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 #include <syslog.h>
+#include <sys/socket.h>
+#include <netdb.h>
 #endif
 
 #ifdef HAVE_SETCON
@@ -54,7 +56,7 @@
 const unsigned char raw_header[RAW_HDR_LEN] = { 0x10, 0xd1, 0x9e, 0x00 };
 
 /* daemon(3) exists only in 4.4BSD or later, and in GNU libc */
-#if !defined(WINDOWS32) && !(defined(BSD) && (BSD >= 199306)) && !defined(__GLIBC__)
+#if !defined(ANDROID) && !defined(WINDOWS32) && !(defined(BSD) && (BSD >= 199306)) && !defined(__GLIBC__)
 static int daemon(int nochdir, int noclose)
 {
  	int fd, i;
@@ -111,21 +113,69 @@ check_superuser(void (*usage_fn)(void))
 #endif
 }
 
-int 
-open_dns(int localport, in_addr_t listen_ip) 
+char *
+format_addr(struct sockaddr_storage *sockaddr, int sockaddr_len)
 {
-	struct sockaddr_in addr;
+	static char dst[INET6_ADDRSTRLEN + 1];
+
+	memset(dst, 0, sizeof(dst));
+	if (sockaddr->ss_family == AF_INET && sockaddr_len >= sizeof(struct sockaddr_in)) {
+		getnameinfo((struct sockaddr *)sockaddr, sockaddr_len, dst, sizeof(dst) - 1, NULL, 0, NI_NUMERICHOST);
+	} else if (sockaddr->ss_family == AF_INET6 && sockaddr_len >= sizeof(struct sockaddr_in6)) {
+		struct sockaddr_in6 *addr = (struct sockaddr_in6 *) sockaddr;
+		if (IN6_IS_ADDR_V4MAPPED(&addr->sin6_addr)) {
+			struct in_addr ia;
+			/* Get mapped v4 addr from last 32bit field */
+			memcpy(&ia.s_addr, &addr->sin6_addr.s6_addr[12], sizeof(ia));
+			strcpy(dst, inet_ntoa(ia));
+		} else {
+			getnameinfo((struct sockaddr *)sockaddr, sockaddr_len, dst, sizeof(dst) - 1, NULL, 0, NI_NUMERICHOST);
+		}
+	} else {
+		dst[0] = '?';
+	}
+	return dst;
+}
+
+int
+get_addr(char *host, int port, int addr_family, int flags, struct sockaddr_storage *out)
+{
+	struct addrinfo hints, *addr;
+	int res;
+	char portnum[8];
+
+	memset(portnum, 0, sizeof(portnum));
+	snprintf(portnum, sizeof(portnum) - 1, "%d", port);
+
+	memset(&hints, 0, sizeof(hints));
+	hints.ai_family = addr_family;
+#ifdef WINDOWS32
+	/* AI_ADDRCONFIG misbehaves on windows */
+	hints.ai_flags = flags;
+#else
+	hints.ai_flags = AI_ADDRCONFIG | flags;
+#endif
+	hints.ai_socktype = SOCK_DGRAM;
+	hints.ai_protocol = IPPROTO_UDP;
+
+	res = getaddrinfo(host, portnum, &hints, &addr);
+	if (res == 0) {
+		int addrlen = addr->ai_addrlen;
+		/* Grab first result */
+		memcpy(out, addr->ai_addr, addr->ai_addrlen);
+		freeaddrinfo(addr);
+		return addrlen;
+	}
+	return res;
+}
+
+int 
+open_dns(struct sockaddr_storage *sockaddr, size_t sockaddr_len)
+{
 	int flag = 1;
 	int fd;
 
-	memset(&addr, 0, sizeof(addr));
-	addr.sin_family = AF_INET;
-	addr.sin_port = htons(localport);
-	/* listen_ip already in network byte order from inet_addr, or 0 */
-	addr.sin_addr.s_addr = listen_ip; 
-
-	if ((fd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0) {
-		fprintf(stderr, "got fd %d\n", fd);
+	if ((fd = socket(sockaddr->ss_family, SOCK_DGRAM, IPPROTO_UDP)) < 0) {
 		err(1, "socket");
 	}
 
@@ -146,12 +196,25 @@ open_dns(int localport, in_addr_t listen_ip)
 	setsockopt(fd, IPPROTO_IP, IP_OPT_DONT_FRAG, (const void*) &flag, sizeof(flag));
 #endif
 
-	if(bind(fd, (struct sockaddr*)&addr, sizeof(addr)) < 0) 
+	if(bind(fd, (struct sockaddr*) sockaddr, sockaddr_len) < 0)
 		err(1, "bind");
 
-	fprintf(stderr, "Opened UDP socket\n");
+	fprintf(stderr, "Opened IPv%d UDP socket\n", sockaddr->ss_family == AF_INET6 ? 6 : 4);
 
 	return fd;
+}
+
+int
+open_dns_from_host(char *host, int port, int addr_family, int flags)
+{
+	struct sockaddr_storage addr;
+	int addrlen;
+
+	addrlen = get_addr(host, port, addr_family, flags, &addr);
+	if (addrlen < 0)
+		return addrlen;
+
+	return open_dns(&addr, addrlen);
 }
 
 void
@@ -167,8 +230,9 @@ do_chroot(char *newroot)
 	if (chroot(newroot) != 0 || chdir("/") != 0)
 		err(1, "%s", newroot);
 
-	seteuid(geteuid());
-	setuid(getuid());
+	if (seteuid(geteuid()) != 0 || setuid(getuid()) != 0) {
+		err(1, "set[e]uid()");
+	}
 #else
 	warnx("chroot not available");
 #endif
@@ -219,7 +283,7 @@ do_detach()
 void
 read_password(char *buf, size_t len)
 {
-	char pwd[80];
+	char pwd[80] = {0};
 #ifndef WINDOWS32
 	struct termios old;
 	struct termios tp;
@@ -236,7 +300,7 @@ read_password(char *buf, size_t len)
 	fprintf(stderr, "Enter password: ");
 	fflush(stderr);
 #ifndef WINDOWS32
-	scanf("%79s", pwd);
+	fscanf(stdin, "%79[^\n]", pwd);
 #else
 	for (i = 0; i < sizeof(pwd); i++) {
 		pwd[i] = getch();
@@ -276,13 +340,15 @@ check_topdomain(char *str)
        return 0;
 }
 
-#ifdef WINDOWS32
+#if defined(WINDOWS32) || defined(ANDROID)
+#ifndef ANDROID
 int
 inet_aton(const char *cp, struct in_addr *inp)
 {
  inp->s_addr = inet_addr(cp);
  return inp->s_addr != INADDR_ANY;
 }
+#endif
 
 void
 warn(const char *fmt, ...)
@@ -291,11 +357,13 @@ warn(const char *fmt, ...)
 
 	va_start(list, fmt);
 	if (fmt) fprintf(stderr, fmt, list);
+#ifndef ANDROID
 	if (errno == 0) {
 		fprintf(stderr, ": WSA error %d\n", WSAGetLastError()); 
 	} else {
 		fprintf(stderr, ": %s\n", strerror(errno));
 	}
+#endif
 	va_end(list);
 }
 
