@@ -11,7 +11,7 @@ Build-Depends: check (>= 0.9.10-3),
                po-debconf,
 	       libsystemd-daemon-dev,
                zlib1g-dev
-Standards-Version: 3.9.4
+Standards-Version: 3.9.5
 Homepage: http://code.kryo.se/iodine
 Vcs-Git: git://git.toastfreeware.priv.at/debian/iodine.git
 Vcs-Browser: http://git.toastfreeware.priv.at/debian/iodine.git/
