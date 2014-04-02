@@ -9,6 +9,7 @@ Build-Depends: check (>= 0.9.10-3),
                help2man,
                pkg-config,
                po-debconf,
+	       libsystemd-daemon-dev,
                zlib1g-dev
 Standards-Version: 3.9.4
 Homepage: http://code.kryo.se/iodine
