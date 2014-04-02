@@ -1,39 +1,43 @@
-Description: Rename struct user to struct _user in the code to avoid naming
- conflict caused by including <sys/user.h> as part of the armel build. Fixes
- FTBFS.
-Origin: Ubuntu
-Bug: http://dev.kryo.se/iodine/ticket/102
-Forwarded: yes
-Reviewed-by: gregor herrmann <gregoa@debian.org>
-Last-Update: 2011-02-10
+From: gregor herrmann <gregoa@debian.org>
+Date: Wed, 2 Apr 2014 13:07:40 +0100
+Subject: armel_ftbfs
 
+---
+ src/user.c | 4 ++--
+ src/user.h | 7 +++++--
+ 2 files changed, 7 insertions(+), 4 deletions(-)
+
+diff --git a/src/user.c b/src/user.c
+index f5ad924..1da7344 100644
 --- a/src/user.c
 +++ b/src/user.c
 @@ -33,7 +33,7 @@
  #include "encoding.h"
  #include "user.h"
  
--struct user users[USERS];
-+struct _user users[USERS];
+-struct tun_user *users;
++struct _user *users;
+ unsigned usercount;
  
  int
- init_users(in_addr_t my_ip, int netbits)
-@@ -58,7 +58,7 @@
- 
+@@ -59,7 +59,7 @@ init_users(in_addr_t my_ip, int netbits)
  	maxusers = (1 << (32-netbits)) - 3; /* 3: Net addr, broadcast addr, iodined addr */
+ 	usercount = MIN(maxusers, USERS);
  	
--	memset(users, 0, USERS * sizeof(struct user));
-+	memset(users, 0, USERS * sizeof(struct _user));
- 	for (i = 0; i < USERS; i++) {
+-	users = calloc(usercount, sizeof(struct tun_user));
++	users = calloc(usercount, sizeof(struct _user));
+ 	for (i = 0; i < usercount; i++) {
  		in_addr_t ip;
  		users[i].id = i;
+diff --git a/src/user.h b/src/user.h
+index 7d02b65..2787fad 100644
 --- a/src/user.h
 +++ b/src/user.h
 @@ -33,7 +33,10 @@
  #define QMEMDATA_LEN 15
  /* Max advisable: 36/2 = 18. Total mem usage: QMEMDATA_LEN * USERS * 6 bytes */
  
--struct user {
+-struct tun_user {
 +/* Renamed to struct _user to avoid naming conflict with struct user found in <sys/user.h>
 + * which gets included in some builds (armel) */
 +
@@ -41,12 +45,12 @@ Last-Update: 2011-02-10
  	char id;
  	int active;
  	int disabled;
-@@ -73,7 +76,7 @@
+@@ -73,7 +76,7 @@ struct tun_user {
  #endif
  };
  
--extern struct user users[USERS];
-+extern struct _user users[USERS];
+-extern struct tun_user *users;
++extern struct _user *users;
  
  int init_users(in_addr_t, int);
  const char* users_get_first_ip();

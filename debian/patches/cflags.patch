@@ -1,28 +1,35 @@
-Description: remove from CFLAGS what gets passed by Debian build system
-Forwarded: no
-Origin: vendor
-Author: gregor herrmann <gregoa@debian.org>
-Last-Update: 2010-07-03
+From: gregor herrmann <gregoa@debian.org>
+Date: Wed, 2 Apr 2014 13:07:40 +0100
+Subject: cflags
 
+---
+ src/Makefile   | 2 +-
+ tests/Makefile | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/Makefile b/src/Makefile
+index 0e78ada..9d04ee0 100644
 --- a/src/Makefile
 +++ b/src/Makefile
-@@ -9,7 +9,7 @@
+@@ -12,7 +12,7 @@ LIBPATH = -L.
+ OS_CPPFLAGS := $(shell sh osflags $(TARGETOS) cppflags)
+ OS_CFLAGS   := $(shell sh osflags $(TARGETOS) cflags)
+ OS_LDFLAGS  := $(shell sh osflags $(TARGETOS) link)
+-CPPFLAGS = -D$(OS) -DGITREVISION=\"$(HEAD_COMMIT)\" $(OS_CPPFLAGS)
++CPPFLAGS += -D$(OS) -DGITREVISION=\"$(HEAD_COMMIT)\" $(OS_CPPFLAGS)
+ CFLAGS += -g -Wall -pedantic $(OS_CFLAGS)
+ LDFLAGS +=  -lz $(OS_LDFLAGS) $(LIBPATH)
  
- LIBPATH = -L.
- LDFLAGS +=  -lz `sh osflags $(TARGETOS) link` $(LIBPATH)
--CFLAGS += -c -g -Wall -D$(OS) -pedantic `sh osflags $(TARGETOS) cflags`
-+CFLAGS += -c -D$(OS) -pedantic `sh osflags $(TARGETOS) cflags` $(CPPFLAGS)
- 
- all: stateos $(CLIENT) $(SERVER)
- 
+diff --git a/tests/Makefile b/tests/Makefile
+index d40f4c7..2dc1168 100644
 --- a/tests/Makefile
 +++ b/tests/Makefile
-@@ -7,7 +7,7 @@
+@@ -7,7 +7,7 @@ OS = `uname | tr "a-z" "A-Z"`
  
  CHECK_PATH = /usr/local
- LDFLAGS = -L$(CHECK_PATH)/lib -lcheck `../src/osflags link`
--CFLAGS = -g -Wall -D$(OS) -I../src -I$(CHECK_PATH)/include -pedantic `../src/osflags cflags`
-+CFLAGS += -D$(OS) -I../src -I$(CHECK_PATH)/include -pedantic `../src/osflags cflags` $(CPPFLAGS)
+ LDFLAGS = -L$(CHECK_PATH)/lib `pkg-config check --libs` -lpthread `sh ../src/osflags $(TARGETOS) link`
+-CFLAGS = -g -Wall -D$(OS) `pkg-config check --cflags` -I../src -I$(CHECK_PATH)/include -pedantic `sh ../src/osflags $(TARGETOS) cflags`
++CFLAGS += -D$(OS) `pkg-config check --cflags` -I../src -I$(CHECK_PATH)/include -pedantic `sh ../src/osflags $(TARGETOS) cflags`
  
  all: $(TEST)
  	@LD_LIBRARY_PATH=${CHECK_PATH}/lib ./$(TEST)
